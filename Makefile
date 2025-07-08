@@ -118,7 +118,7 @@ CROSS_COMPILE_PATH = /opt/trendchip/buildroot-gcc1030-glibc232_kernel5_4/usr/bin
 CROSS_COMPILE_ATF = $(CROSS_COMPILE_PATH)/arm-linux-
 else
 ifneq ($(strip $(TCSUPPORT_OPENWRT)),)
-ifneq ($(strip $(TCSUPPORT_CPU_EN7581)),)
+ifneq ($(strip $(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_EN7581)),)
 CROSS_COMPILE_ATF = $(TOOLCHAIN_BASE)/bin/arm-linux-
 else
 CROSS_COMPILE_ATF = $(CROSS_COMPILE)
@@ -442,7 +442,7 @@ ifneq ($(findstring armlink,$(notdir $(LD))),)
 # LD = gcc (used when GCC LTO is enabled)
 else ifneq ($(findstring gcc,$(notdir $(LD))),)
 	# Pass ld options with Wl or Xlinker switches
-	TF_LDFLAGS		+=	-Wl,--fatal-warnings -O1
+	TF_LDFLAGS		+=	-Wl,--no-fatal-warnings -O1
 	TF_LDFLAGS		+=	-Wl,--gc-sections
 
 	TF_LDFLAGS		+=	-Wl,-z,common-page-size=4096 #Configure page size constants
@@ -480,7 +480,7 @@ else
 # ld.lld reports section type mismatch warnings,
 # therefore don't add --fatal-warnings to it.
 	ifeq ($(findstring ld.lld,$(notdir $(LD))),)
-		TF_LDFLAGS	+=	$(TF_LDFLAGS_$(ARCH)) --fatal-warnings
+		TF_LDFLAGS	+=	$(TF_LDFLAGS_$(ARCH)) --no-fatal-warnings
 	endif
 
 endif #(LD = armlink)
