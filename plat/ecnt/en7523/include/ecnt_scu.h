@@ -34,7 +34,7 @@ extern unsigned int GET_NP_SCU_EMMC(void);
 extern void SET_IS_DDR4(unsigned int val);
 extern void SET_PACKAGE_ID(unsigned int val);
 extern void set_boot_from_spi_ejtag_enable(unsigned int isEnabled);
-#if defined(TCSUPPORT_CPU_EN7581) && defined(IMAGE_BL2)
+#if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && defined(IMAGE_BL2)
 extern void SET_R2C_MODE(int mode);
 #endif
 

@@ -149,7 +149,7 @@ ifeq ($(TCSUPPORT_BL2_OPTIMIZATION),)
 				${LZMA_SOURCES}
 				
 
-ifeq ($(TCSUPPORT_CPU_EN7581),1)
+ifeq ($(TCSUPPORT_CPU_EN7581),1) # TODO handle TCSUPPORT_CPU_AN7583
 ifeq ($(MT7510_EN7512_FPGA_STAGE),)
 	BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/ddr_cal/an7581/Hal_io.c		\
 				${ECNT_PLAT}/common/drivers/ddr_cal/an7581/DDR3_dram_init.c		\
@@ -185,7 +185,7 @@ else
 				${ECNT_PLAT_SOC}/ecnt_avs.c							\
 				${ECNT_PLAT_SOC}/ecnt_scu_phy.c						\
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
-endif
+endif # TCSUPPORT_CPU_EN7581
 else
 ifeq ($(IMAGE_BL21),1)
 	BL2_SOURCES			+= 	lib/cpus/${ARCH}/cortex_a53.S			\
@@ -221,11 +221,11 @@ ifeq ($(IMAGE_BL22),1)
 				${ECNT_PLAT}/common/ecnt_bl2_mem_params_desc.c
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_EN7581)$(TCSUPPORT_CPU_AN7552)),)
 	#BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramc.c
-#ifeq ($(TCSUPPORT_CPU_AN7583),1)
+ifeq ($(TCSUPPORT_CPU_AN7583),1)
 	#BL2_SOURCES			+=	${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramc_selfrefresh_api.c	\
-	#			${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramtest.c	\
-	#			${ECNT_PLAT}/common/drivers/avs/${SOC_SUB_DIR}/ecnt_avs.c
-#endif
+	#			${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramtest.c
+	BL2_SOURCES		+= ${ECNT_PLAT}/common/drivers/avs/${SOC_SUB_DIR}/ecnt_avs.c
+endif
 ifneq ($(TCSUPPORT_BB_FIX_UNOPEN),0)
 ifeq ($(TCSUPPORT_ATF_RELEASE),)
 	BL2_UNOPEN_SOURCES	+= ${ECNT_PLAT}/common/drivers/efuse/$(EFUSE_DRIVER)				\
@@ -282,7 +282,7 @@ else
 				${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/DDR3_dram_init.c		\
 				${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/ANA_init_config.c		\	
 				${ECNT_PLAT}/common/drivers/efuse_load/${SOC_SUB_DIR}/efuse_load.c
-ifeq ($(TCSUPPORT_CPU_EN7581),1)
+ifeq ($(TCSUPPORT_CPU_EN7581),1) # TODO handle TCSUPPORT_CPU_AN7583
 	BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/serdes/an7581/serdes_config.c
 endif
 	BL2_UNOPEN_SOURCES	+= ${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramc.c
@@ -322,7 +322,7 @@ ifeq ($(TCSUPPORT_CPU_AN7583),1)
 				${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramtest.c	\
 				${ECNT_PLAT}/common/drivers/avs/${SOC_SUB_DIR}/ecnt_avs.c
 endif
-ifeq ($(TCSUPPORT_CPU_EN7581),1)
+ifeq ($(TCSUPPORT_CPU_EN7581),1)  # TODO handle TCSUPPORT_CPU_AN7583
 	BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/serdes/an7581/serdes_config.c
 endif
 	BL2_UNOPEN_SOURCES	+= ${ECNT_PLAT}/common/drivers/ddr_cal/${SOC_SUB_DIR}/dramc.c \
@@ -463,7 +463,7 @@ endif
 
 ifeq ($(MT7510_EN7512_FPGA_STAGE),)
 ifeq ($(TCSUPPORT_BL2_OPTIMIZATION),)
-ifeq ($(TCSUPPORT_CPU_EN7581),1)
+ifeq ($(TCSUPPORT_CPU_EN7581),1)  # TODO handle TCSUPPORT_CPU_AN7583
 	BL2_UNOPEN_SOURCES += ${ECNT_PLAT}/common/drivers/ddr_cal/an7581/dramc.c
 else
 	BL2_UNOPEN_SOURCES += ${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc.c

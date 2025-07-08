@@ -132,7 +132,7 @@ unsigned int GET_NP_SCU_EMMC(void)
 	return ((get_np_scu_data(CR_NP_SCU_BOOT_TRAP_CONF_DEC) & BOOT_TRAP_CONF_DEC_EMMC_MASK) >> BOOT_TRAP_CONF_DEC_EMMC_OFFSET);
 }
 
-#if defined(TCSUPPORT_CPU_EN7581) && defined(IMAGE_BL2)
+#if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && defined(IMAGE_BL2)
 void SET_R2C_MODE(int mode)
 {
 	unsigned int data = 0;

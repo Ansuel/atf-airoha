@@ -432,7 +432,7 @@ int ecnt_system_init(unsigned long long *p_dram_size)
 	check_fpga();
 
 	bus_config();
-#if defined(TCSUPPORT_CPU_EN7523)
+#if defined(TCSUPPORT_CPU_EN7523) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_EN7581)
 	if(isEN7523 || isEN7581 || isAN7552 || isAN7583)
 	{
 		en7523_init();

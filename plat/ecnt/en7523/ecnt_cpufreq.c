@@ -73,7 +73,7 @@
 #define VAL_0               (0)
 #define VAL_1               (1)
 
-#if defined(TCSUPPORT_CPU_EN7581)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 static unsigned char cpu_freq_config_pcw[]=     { 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x22, 0x24, 0x26, 0x14, 0x15, 0x16, 0x17, 0x18};
 static unsigned char cpu_freq_config_posdiv[]=  {VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_1,VAL_0,VAL_0,VAL_0,VAL_0,VAL_0};
 static char *clk_src_name[]={"xtal(50MHz)","armpll(500~1200MHz)","pll1(540MHz)","pll2(400MHz)"};
@@ -250,7 +250,7 @@ unsigned int curr_armpll_clk_get (void)
 {
     int i;
 
-#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7552)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
     unsigned int pcw, posdiv, freq;
 
     pcw = (((readReg(CR_CPUPLL_SDM_PCW))>>PCW_SHIFT)&PCW_MASK);
@@ -411,7 +411,7 @@ static int confirm_armpll(enum e_cpu_freq cpuFreq)
 {
     unsigned int val;
 
-#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7552)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
     val = (((readReg(CR_CPUPLL_SDM_PCW))>>PCW_SHIFT)&PCW_MASK);
 
 	if (val!=cpu_freq_config_pcw[cpuFreq]) {

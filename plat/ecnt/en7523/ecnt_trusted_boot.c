@@ -73,7 +73,7 @@ int get_into_inic(void)
 {
 	return secure_data.into_inic;
 }
-#ifndef TCSUPPORT_CPU_EN7581
+#if !defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7583)
 int get_freq_by_efuse(void)
 {
 	return secure_data.freq_by_efuse;

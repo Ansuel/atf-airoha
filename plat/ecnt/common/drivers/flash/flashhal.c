@@ -97,7 +97,7 @@ static void dram_dump(unsigned char *buf, int len)
 FLASH_INIT_T flash_init(hw_trap_t *hw_trap)
 {
 	hwtrap = hw_trap;
-#if defined (TCSUPPORT_CPU_EN7581) || defined (TCSUPPORT_CPU_AN7552)
+#if defined (TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined (TCSUPPORT_CPU_AN7552)
 	if (hwtrap->is_spi_nand_device_ecc ||
 		hwtrap->is_spi_nand_ctrl_ecc ||
 		hwtrap->is_parallel_nand) {
@@ -144,7 +144,7 @@ FLASH_READ_STATUS_T flash_read(uint32_t from, uint32_t len, uint8_t *p_buf)
 	uint32_t retlen = 0;
 	SPI_NAND_FLASH_RTN_T status = SPI_NAND_FLASH_RTN_NO_ERROR;
 	int read_status = 0;
-#if defined (TCSUPPORT_CPU_EN7581) || defined (TCSUPPORT_CPU_AN7552)
+#if defined (TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined (TCSUPPORT_CPU_AN7552)
 	if (hwtrap->is_spi_nand_device_ecc ||
 		hwtrap->is_spi_nand_ctrl_ecc ||
 		hwtrap->is_parallel_nand) {
@@ -262,7 +262,7 @@ int flash_erase(uint32_t addr, uint32_t size)
 	uint32_t retlen = 0;
 #endif
 
-#if defined (TCSUPPORT_CPU_EN7581) || defined (TCSUPPORT_CPU_AN7552)
+#if defined (TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined (TCSUPPORT_CPU_AN7552)
 	if (hwtrap->is_spi_nand_device_ecc ||
 		hwtrap->is_spi_nand_ctrl_ecc ||
 		hwtrap->is_parallel_nand) {
@@ -301,7 +301,7 @@ int flash_write(uint32_t to, uint32_t len, uint8_t *p_buf)
 	int lba = 0;
 #endif
 
-#if defined (TCSUPPORT_CPU_EN7581) || defined (TCSUPPORT_CPU_AN7552)
+#if defined (TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined (TCSUPPORT_CPU_AN7552)
 	if (hwtrap->is_spi_nand_device_ecc ||
 		hwtrap->is_spi_nand_ctrl_ecc ||
 		hwtrap->is_parallel_nand) {

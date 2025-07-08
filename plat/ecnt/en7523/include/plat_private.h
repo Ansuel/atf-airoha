@@ -14,7 +14,7 @@ typedef struct hw_trap {
 	uint32_t skip_fw_upgrade		:1;
 	uint32_t fw_upgrade_mode		:1;
 	uint32_t inc_mode				:1;
-#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7552)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
 	uint32_t hw_trap_decode			:7;
 	uint32_t inc_mdio_mode			:1;
 	uint32_t is_emmc				:1;
@@ -66,7 +66,7 @@ int efuse_check_remark (void);
 
 #endif
 unsigned int* get_secure_data_base(void);
-#ifndef TCSUPPORT_CPU_EN7581
+#if !defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7583)
 int get_freq_by_efuse(void);
 int get_freq_sel(void);
 #endif

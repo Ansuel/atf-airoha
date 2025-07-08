@@ -85,7 +85,7 @@ DEFINE_CONFIGURE_MMU_EL(el3)
 
 unsigned int plat_get_syscnt_freq2(void)
 {
-#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7552)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
 	/* 7581 CPU timer clk fixed in 25M*/
 	return SYS_COUNTER_FREQ_IN_TICKS_25M;
 #else

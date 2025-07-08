@@ -66,7 +66,7 @@ void hw_trap_init(void)
 			case DBG_INIC_MODE:
 			{
 				hw_trap.inc_mode = 1;
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 				hw_trap.inc_mdio_mode = 0;
 #endif
 				hw_trap.fw_upgrade_mode = 0;
@@ -74,7 +74,7 @@ void hw_trap_init(void)
 				NOTICE("DBG_INIC_MODE\n");
 				break;
 			}
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 			case DBG_INIC_MDIO_MODE:
 			{
 				hw_trap.inc_mode = 0;
@@ -89,7 +89,7 @@ void hw_trap_init(void)
 			case DBG_FWU_MODE:
 			{
 				hw_trap.inc_mode = 0;
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 				hw_trap.inc_mdio_mode = 0;
 #endif
 				hw_trap.fw_upgrade_mode = 1;
@@ -100,7 +100,7 @@ void hw_trap_init(void)
 			case DBG_FLASH_MODE:
 			{
 				hw_trap.inc_mode = 0;
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 				hw_trap.inc_mdio_mode = 0;
 #endif
 				hw_trap.fw_upgrade_mode = 0;
@@ -118,7 +118,7 @@ void hw_trap_init(void)
 		hw_trap.fw_upgrade_mode	= !(mmio_read_32(EN7523_HWTRAP_CONF) & HWTRAP_FW_UPGRADE);
 #if (!defined(TCSUPPORT_CPU_AN7552) && !defined(TCSUPPORT_CPU_AN7583))
 		hw_trap.inc_mode 		= (hwtrap_cfg == HWTRAP_INIC_MODE);
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 		hw_trap.inc_mdio_mode	= (hwtrap_cfg == HWTRAP_INIC_MDIO_MODE);
 #endif
 #endif
@@ -126,8 +126,8 @@ void hw_trap_init(void)
 
 	SET_IS_SPI_CONTROLLER_ECC(0);
 
-#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7552)
-#if defined(TCSUPPORT_CPU_EN7581)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 	if((hwtrap_cfg == HWTRAP_EMMC_MODE) ||
 	   (hwtrap_cfg == HWTRAP_EMMC_MODE2)) {
 		hw_trap.is_emmc = 1;

@@ -20,7 +20,7 @@
 #endif
 #define APB_CPUTMR_CLK      (50)/*MHz*/
 #else
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 #define EMI_CLK_DOMAIN      (0x21C00000) /*540 MHz*/
 #define APB_TMIER_CLK       (150)/*MHz*/
 #define CR_CHIP_SCU_EMI_CLK (0x1fa201b8)
@@ -50,7 +50,7 @@ static unsigned int get_1us_timeTick_by_timeClk(unsigned int clk /*MHz*/)
     return clk;
 }
 
-#if defined(TCSUPPORT_CPU_EN7581) && !defined(IS_FPGA_STAGE)
+#if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583))  && !defined(IS_FPGA_STAGE)
 static unsigned int bus_clk_get(void)
 {
     unsigned int bus_clksrc[] = {600, 540};             /*0x1fa201bc[8], no div1*/
@@ -75,7 +75,7 @@ static unsigned int get_tmrTick_by_usTime (unsigned int usTime)
 {
     unsigned int apb_bus_clk=APB_TMIER_CLK;
 
-    #if defined(TCSUPPORT_CPU_EN7581) && !defined(IS_FPGA_STAGE)
+    #if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && !defined(IS_FPGA_STAGE)
     apb_bus_clk = (bus_clk_get()>>1);
     #endif
 
@@ -92,7 +92,7 @@ static unsigned int get_tmrTick_by_msTime (unsigned int msTime)
 {
     unsigned int apb_bus_clk=APB_TMIER_CLK;
 
-    #if defined(TCSUPPORT_CPU_EN7581) && !defined(IS_FPGA_STAGE)
+    #if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && !defined(IS_FPGA_STAGE)
     apb_bus_clk = (bus_clk_get()>>1);
     #endif
 
@@ -1297,7 +1297,7 @@ void rbus_timeout_test(int test_index)
 	unsigned int time_start = 0;
 	unsigned int time_end = 0;
     unsigned int emi_clk=EMI_CLK_DOMAIN;
-    #if defined(TCSUPPORT_CPU_EN7581) && !defined(IS_FPGA_STAGE)
+    #if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && !defined(IS_FPGA_STAGE)
     unsigned int emi_clksrc[] = {540, 480, 400, 300};   /*0x1fa201b8[9:8]*/
     unsigned int regVal, clksrc, clkdiv;
     #endif
@@ -1308,7 +1308,7 @@ void rbus_timeout_test(int test_index)
 	mmio_write_32(TIMEOUT_STS0, 0);
 	mmio_write_32(TIMEOUT_STS1, 0);
 
-    #if defined(TCSUPPORT_CPU_EN7581) && !defined(IS_FPGA_STAGE)
+    #if (defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)) && !defined(IS_FPGA_STAGE)
     if ((test_index == 4)||(test_index == 5)) {
         regVal = mmio_read_32(CR_CHIP_SCU_EMI_CLK);
         clksrc = (regVal>>8)&0x3;

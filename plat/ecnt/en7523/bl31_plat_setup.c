@@ -25,14 +25,14 @@
 
 extern void bl31_db_entrypoint(void);
 extern int console_ecnt_register(uintptr_t baseaddr, console_t *console);
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 extern int efuse_check_eco(void);
 #endif
 extern uint32_t uartDisable;
 static entry_point_info_t bl32_ep_info;
 static entry_point_info_t bl33_ep_info;
 static console_t console;
-#if defined(TCSUPPORT_CPU_EN7581)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 #define L2C_SRAM_CONFIG
 #endif
 #ifdef L2C_SRAM_CONFIG
@@ -92,7 +92,7 @@ static unsigned long t_pat[] = {0xa5a5a5a5a5a5a5a5, 0x5a5a5a5a5a5a5a5a, 0xffffff
 
 unsigned long long calculate_dram_size(void)
 {    
-#if defined(TCSUPPORT_CPU_EN7581)
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 	return S_8G;
 #else
 	return S_2G;
@@ -399,7 +399,7 @@ void bl31_plat_arch_setup(void)
     l2c_sram_config(l2t_full_l2c);
 #endif
 
-#ifdef TCSUPPORT_CPU_EN7581
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 	if (1 == efuse_check_eco())
 	{
 		mmio_setbits_32(RG_TOP_REV_24, (uint32_t)0x1 << 0);
