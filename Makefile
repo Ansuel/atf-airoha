@@ -119,7 +119,7 @@ CROSS_COMPILE_ATF = $(CROSS_COMPILE_PATH)/arm-linux-
 else
 ifneq ($(strip $(TCSUPPORT_OPENWRT)),)
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_EN7581)),)
-CROSS_COMPILE_ATF = $(TOOLCHAIN_BASE)/bin/arm-linux-
+CROSS_COMPILE_ATF = $(ARM32TOOLCHAIN_BASE)
 else
 CROSS_COMPILE_ATF = $(CROSS_COMPILE)
 endif
@@ -134,8 +134,7 @@ endif
 endif
 else
 $(eval $(call add_define,AARCH64))
-CROSS_COMPILE_PATH = /opt/trendchip/buildroot-gcc910_glibc229_arm64/usr/bin
-CROSS_COMPILE_ATF = $(CROSS_COMPILE_PATH)/aarch64-linux-
+CROSS_COMPILE_ATF = $(CROSS_COMPILE)
 endif
 
 CC			:=	${CROSS_COMPILE_ATF}gcc
