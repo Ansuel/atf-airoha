@@ -387,56 +387,58 @@ void bl2_plat_preload_setup(void)
 		{
 			int len = 0;
 
-			flash_read_status = flash_read(PLAT_ECNT_FIP_OFFSET, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *) PLAT_ECNT_FIP_BASE);
-			if ((flash_read_status == FLASH_READ_STATUS_INCORRECT) || 
-				(flash_read_status == FLASH_READ_STATUS_CORRECT && plat_check_bypass() != BYPASS_FWUPGRADE))
+			flash_read_status = flash_read(PLAT_ECNT_FIP_OFFSET, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *)  PLAT_ECNT_FIP_BASE);
+			if ((flash_read_status == FLASH_READ_STATUS_INCORRECT) ||
+			     (flash_read_status == FLASH_READ_STATUS_CORRECT && plat_check_bypass() != BYPASS_FWUPGRADE))
 			{
-				printf("Press x to update firmware\n");
+				printf("Press x to load BL31 + U-Boot FIP\n");
 				while (len == 0)
 				{
 					if (console.getc(&console) == 'x')
 					{
-						len = XModemReceive(&console, fwu_img_len,
-									(uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+						// len = XModemReceive(&console, fwu_img_len,
+						// 		    (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+						len = XModemReceive(&console, PLAT_ECNT_FIP_MAX_SIZE,
+								    (uint8_t *) PLAT_ECNT_FIP_BASE);
 					}
 				}
 
-#if defined(TCSUPPORT_TPL_SUPPORT)
-				if (len >= 0x80000)
-				{
-					if(hw_trap.is_emmc){
-						flash_erase(0, len);
-						flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));						
-					}
-					if (hw_trap.is_spi_nand_device_ecc ||
-						hw_trap.is_spi_nand_ctrl_ecc ||
-						hw_trap.is_parallel_nand) {
-						if(len == 0x80000)
-						{
-							flash_erase(0, len);
-							flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));							
-						}
-						else
-						{
-							/*no need gpte padding*/
-							flash_erase(0, len-0x4000);
-							flash_write(0, 0x80000, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
-							flash_write(0x80000, len-0x84000, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE + 0x84000));
-						}
-					}
-				}
-#else
-				if (len == fwu_img_len)
-				{
-					flash_erase(0, len);
-					flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
-					if (plat_get_dual_boot())
-					{
-						/*put the image to FIP BASE for booting */
-						flash_read(fip_offset, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *) PLAT_ECNT_FIP_BASE);
-					}
-				}
-#endif
+// #if defined(TCSUPPORT_TPL_SUPPORT)
+// 				if (len >= 0x80000)
+// 				{
+// 					if(hw_trap.is_emmc){
+// 						flash_erase(0, len);
+// 						flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+// 					}
+// 					if (hw_trap.is_spi_nand_device_ecc ||
+// 					    hw_trap.is_spi_nand_ctrl_ecc ||
+// 					    hw_trap.is_parallel_nand) {
+// 						if(len == 0x80000)
+// 						{
+// 							flash_erase(0, len);
+// 							flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+// 						}
+// 						else
+// 						{
+// 							/*no need gpte padding*/
+// 							flash_erase(0, len-0x4000);
+// 							flash_write(0, 0x80000, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+// 							flash_write(0x80000, len-0x84000, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE + 0x84000));
+// 						}
+// 					}
+// 				}
+// #else
+// 				if (len == fwu_img_len)
+// 				{
+// 					flash_erase(0, len);
+// 					flash_write(0, len, (uint8_t *) (PLAT_ECNT_FIP_BASE - PLAT_ECNT_MV_DATA_SIZE));
+// 					if (plat_get_dual_boot())
+// 					{
+// 						/*put the image to FIP BASE for booting */
+// 						flash_read(fip_offset, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *) PLAT_ECNT_FIP_BASE);
+// 					}
+// 				}
+// #endif
 			} else if(flash_read_status == FLASH_READ_STATUS_CORRECT && plat_check_bypass() == BYPASS_FWUPGRADE){
 				NOTICE("BYPASS\n");
 			}
