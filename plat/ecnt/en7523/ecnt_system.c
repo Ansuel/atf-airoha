@@ -287,33 +287,32 @@ static void en7523_init(void)
 
 void ecnt_cpu_speedup(void)
 {
-    #if defined(TCSUPPORT_CPU_EN7523)
-    if ((is_asic() == 0))
-		    return;
-    
-    if(isEN7523)
-    {
-        if(isEN7529CU || isEN7529DU || isEN7529CT || isEN7529DT ||
-			isEN7529IT || isEN7529GTH || isEN7529GTS || isEN7562CU ||
-			isEN7562DU || isEN7562CT || isEN7562DT || isEN7562GTH ||
-			isEN7562GTS || isEN7529DTM || isEN7562DTM || isEN7529ITM ||
-			isEN7529CTM || isEN7562CTM)
-            en7523_armpll_set(cpu_freq_950M);
-        else if (isEN7523SU)
-            en7523_armpll_set(cpu_freq_550M);
-        else if (isEN7523GU || isEN7523DU || isEN7523DT || isEN7523DTM)
-            en7523_armpll_set(cpu_freq_750M);
-        else {
-            ERROR("(%s)Unknow EN7523 Package ID.\n", __func__);
-            return;
-        }
-    }
-    #if defined(TCSUPPORT_CPU_EN7581)
-    else if(isEN7581)
-    {
-        en7523_armpll_set(cpu_freq_1200M);
-    }
-    #endif
+#if defined(TCSUPPORT_CPU_EN7523)
+	if ((is_asic() == 0))
+			return;
+
+	if(isEN7523) {
+		if(isEN7529CU || isEN7529DU || isEN7529CT || isEN7529DT ||
+		   isEN7529IT || isEN7529GTH || isEN7529GTS || isEN7562CU ||
+		   isEN7562DU || isEN7562CT || isEN7562DT || isEN7562GTH ||
+		   isEN7562GTS || isEN7529DTM || isEN7562DTM || isEN7529ITM ||
+		   isEN7529CTM || isEN7562CTM)
+			en7523_armpll_set(cpu_freq_950M);
+		else if (isEN7523SU)
+			en7523_armpll_set(cpu_freq_550M);
+		else if (isEN7523GU || isEN7523DU || isEN7523DT || isEN7523DTM)
+			en7523_armpll_set(cpu_freq_750M);
+		else {
+			ERROR("(%s)Unknow EN7523 Package ID.\n", __func__);
+			return;
+		}
+	}
+#if defined(TCSUPPORT_CPU_EN7581)
+	else if(isEN7581)
+	{
+   	     en7523_armpll_set(cpu_freq_1200M);
+	}
+#endif
 	else if(isAN7552)
 	{
 		an7552_bootup_clk_src_switch(cpu_freq_1000M);
@@ -324,18 +323,18 @@ void ecnt_cpu_speedup(void)
 		an7552_bootup_clk_src_switch(cpu_freq_1200M);
 	}
 #endif
-    else {
-        ERROR("(%s)Unknow Chip ID.\n", __func__);
-        return;
-    }
+	else {
+		ERROR("(%s)Unknow Chip ID.\n", __func__);
+		return;
+	}
 
-    /* only enable ARMPLL */
+  	  /* only enable ARMPLL */
 	set_cpu_domain_clk_gating(cpu_clk_pll1, 0);
 	set_cpu_domain_clk_gating(cpu_clk_pll2, 0);
 	set_cpu_domain_clk_gating(cpu_clk_armpll_div2, 0);
-    #endif
+#endif
 
-    return;
+  	return;
 }
 
 /* If rbus timeout happended, print the messages for debug*/
@@ -437,12 +436,11 @@ int ecnt_system_init(unsigned long long *p_dram_size)
 	if(isEN7523 || isEN7581 || isAN7552 || isAN7583)
 	{
 		en7523_init();
-        #if defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7583)
+#if defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7583)
 		driving_strength_config();
 		/*set EMI clock*/
 		mmio_write_32(0x1fa201b8, 0x0);
-		
-        #endif
+#endif
 
 		if(isEN7581 || isAN7552)
 		{
@@ -476,7 +474,7 @@ int ecnt_system_init(unsigned long long *p_dram_size)
 		ERROR("Unknow Chip ID.\n");
 		panic();
 	}
-	
+
 	*p_dram_size = dramc_main();
 	SET_DRAM_SIZE((*p_dram_size >> 20));
 
@@ -485,7 +483,7 @@ int ecnt_system_init(unsigned long long *p_dram_size)
 	mmio_write_32(DMA_BLOCK_MASK, 0xffffff80);
 	mmio_write_32(DMA_BLOCK_EN, 0x1);
 
-    rbus_timeout_check();
+	rbus_timeout_check();
 
 #if defined(TCSUPPORT_CPU_AN7552)
 	/* Check DDR status. Only enable 7552 CPU WRR in DDR4 */

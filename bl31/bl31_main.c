@@ -140,9 +140,9 @@ void bl31_main(void)
 
 	/* Init per-world context registers for non-secure world */
 	manage_extensions_nonsecure_per_world();
-	if(!uartDisable){
-	NOTICE("BL31: %s\n", version_string);
-	NOTICE("BL31: %s\n", build_message);
+	if (!uartDisable) {
+		NOTICE("BL31: %s\n", version_string);
+		NOTICE("BL31: %s\n", build_message);
 	}
 
 #if FEATURE_DETECTION
@@ -172,9 +172,9 @@ void bl31_main(void)
 #endif
 
 	/* Initialize the runtime services e.g. psci. */
-	if(!uartDisable){
-	INFO("BL31: Initializing runtime services\n");
-	}
+	if (!uartDisable)
+		INFO("BL31: Initializing runtime services\n");
+
 	runtime_svc_init();
 
 	/*

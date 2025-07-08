@@ -104,7 +104,7 @@ FLASH_INIT_T flash_init(hw_trap_t *hw_trap)
 		if (nandflash_init(0) != 0) {
 			return FLASH_INIT_FAIL;
 		}
-	} 
+	}
 #else
 	if (IS_NANDFLASH) {
  		if (nandflash_init(0) != 0) {
@@ -115,7 +115,7 @@ FLASH_INIT_T flash_init(hw_trap_t *hw_trap)
 
 
 #ifdef TCSUPPORT_EMMC
-	else if(hwtrap->is_emmc) {
+	else if (hwtrap->is_emmc) {
 		/* 7581CT and 7581DT does not support emmc */
 		if (support_emmc_feature() == 0){
 			ERROR("Unsupport emmc. emmc init fail.\n");

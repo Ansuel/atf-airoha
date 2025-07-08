@@ -102,12 +102,12 @@ unsigned long long calculate_dram_size(void)
 
 static void platform_setup_cpu(void)
 {
-	/* Set Core to Arch64 */
-	#if (defined(TCSUPPORT_CPU_EN7581)) && (!defined(TCSUPPORT_CPU_AN7583))
-    mmio_setbits_32((MCUCFG_BASE + 0x3C), 0xf << 12); /* for cpu0~3 */
-    #else
+	/* Set Core to AArch64 */
+#if (defined(TCSUPPORT_CPU_EN7581)) && (!defined(TCSUPPORT_CPU_AN7583))
+	mmio_setbits_32((MCUCFG_BASE + 0x3C), 0xf << 12); /* for cpu0~3 */
+#else
 	mmio_setbits_32((MCUCFG_BASE + 0x3C), 0x3 << 12); /* for cpu0~1 */
-    #endif
+#endif
 }
 
 static void set_tzpc_attr(void)

@@ -184,7 +184,7 @@
 /* FIP placed after ROM to append it to BL1 with very little padding. */
 
 #define PLAT_ECNT_MULTI_BOOT_SIZE			(0x100000)
-#define PLAT_ECNT_FIP_OFFSET	(0x800)
+#define PLAT_ECNT_FIP_OFFSET				(0x800)
 #if defined(IMAGE_BL1)
 #define PLAT_ECNT_FIP_BASE		(BL_SRAM_BASE + BL_SRAM_SIZE)
 #define PLAT_ECNT_FIP_MAX_SIZE	(0x1F800)

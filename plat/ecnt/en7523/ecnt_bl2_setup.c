@@ -40,7 +40,7 @@ unsigned int rst_vector_base_addr = RVBADDRESS_CPU0;
 
 extern int console_ecnt_register(uintptr_t baseaddr, console_t *console);
 extern int XModemReceive(console_t *console, unsigned int bufLen , unsigned char *bufBase);
-extern void	get_bootimage_by_npu_iNIC(unsigned int imgDstAddr);
+extern void get_bootimage_by_npu_iNIC(unsigned int imgDstAddr);
 extern void disable_NPU_dbgMsg(void);
 extern void phy_config_efuse_load(void);
 extern void ef_read_parse(unsigned int start, unsigned int len, unsigned char *data);
@@ -161,8 +161,7 @@ void hw_trap_init(void)
 
 void debug_init(void)
 {
-
-		tf_log_set_max_level(LOG_LEVEL_NOTICE);
+	tf_log_set_max_level(LOG_LEVEL_NOTICE);
 }
 
 void __dead2 plat_error_handler(int err)
@@ -208,8 +207,6 @@ void bl2_el3_early_platform_setup(u_register_t arg1, u_register_t arg2,
 	efuse_init();
 	phy_config_efuse_load();
 #endif
-
-	
 
 	/*
 	 * Allow BL2 to see the whole Trusted RAM.
@@ -264,17 +261,17 @@ void bl2_el3_plat_arch_setup(void)
 	generic_delay_timer_init();
 	ecnt_system_init(&dram_size);
 
-    #ifdef CPU_BUS_BL2_TEST
+#ifdef CPU_BUS_BL2_TEST
     tests_on_l2c_sram();
-    #endif
+#endif
 
 	mmap_add_region(EN7523_MEM_BASE, EN7523_MEM_BASE, dram_size, MT_DEVICE | MT_RW | MT_SECURE);
-    plat_configure_mmu_svc_mon(bl2_el3_tzram_layout.total_base,
-                   bl2_el3_tzram_layout.total_size,
-                   BL_CODE_BASE,
-                   BL2_CODE_END,
-                   BL_COHERENT_RAM_BASE,
-                   BL_COHERENT_RAM_END);
+    	plat_configure_mmu_svc_mon(bl2_el3_tzram_layout.total_base,
+                		   bl2_el3_tzram_layout.total_size,
+                		   BL_CODE_BASE,
+                		   BL2_CODE_END,
+                		   BL_COHERENT_RAM_BASE,
+                		   BL_COHERENT_RAM_END);
 
 #endif
 
@@ -293,7 +290,6 @@ void bl2_plat_preload_setup_optimize(void)
 #ifdef IMAGE_BL21
 		struct image_info info = {0};
 		Bl2_optimize_header_t *f_header = NULL;
-		
 		f_header = (Bl2_optimize_header_t*)((unsigned char*)BL2_OPTIMIZE_HEADER_BASE);
 
 		/* parsing decompress info*/
@@ -306,12 +302,10 @@ void bl2_plat_preload_setup_optimize(void)
 			f_header->lzma_src -= ECNT_L2_SRAM_SIZE;
 #endif
 
-
 		/* Setup the lzma attr*/
 		image_decompress_init(f_header->lzma_src, EN7523_IMAGE_BUF_SIZE, lzmaBuffToBuffDecompress);
 		image_decompress_work_buf_init(EN7523_IMAGE_BUF_OFFSET, EN7523_IMAGE_BUF_SIZE);
 		image_decompress_prepare(&info);
-	
 		image_decompress(&info);
 
 		__attribute__((noreturn)) void (*bl2)(void);
@@ -327,12 +321,11 @@ void bl2_plat_preload_setup_optimize(void)
 			image_decompress(&info);
 			VPint(BL2_OPTIMIZE_STATUS) = 0;
 		}
-		
 
 		/* jump to nextimage*/
 		inv_dcache_range(BL1_RW2_BASE, BL1_RW2_SIZE);
 		disable_mmu_icache_secure();
-		
+
 		(*bl2)();
 
 #elif IMAGE_BL22
@@ -349,7 +342,7 @@ void bl2_plat_preload_setup_optimize(void)
 		/* jump to bl21*/
 		inv_dcache_range(BL1_RW2_BASE, BL1_RW2_SIZE);
 		disable_mmu_icache_secure();
-		
+
 		(*bl2)();
 #endif
 
@@ -375,7 +368,7 @@ void bl2_plat_preload_setup(void)
 
 	bl2_platform_setup();
 
-	if(plat_get_dual_boot())
+	if (plat_get_dual_boot())
 	{
 		fip_offset += PLAT_ECNT_MULTI_BOOT_SIZE;
 		fwu_img_len += PLAT_ECNT_MULTI_BOOT_SIZE;

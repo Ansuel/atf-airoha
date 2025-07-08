@@ -187,7 +187,6 @@ else
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
 endif
 else
-			
 ifeq ($(IMAGE_BL21),1)
 	BL2_SOURCES			+= 	lib/cpus/${ARCH}/cortex_a53.S			\
 				lib/cpus/${ARCH}/aem_generic.S						\

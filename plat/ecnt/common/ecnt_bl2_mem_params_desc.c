@@ -57,7 +57,6 @@ static bl_mem_params_node_t bl2_mem_params_descs[] = {
 		#else
 		.next_handoff_image_id = INVALID_IMAGE_ID,
 		#endif
-		
     },
 
 #ifdef TCSUPPORT_OPTEE

@@ -109,12 +109,13 @@ void bl2_main(void)
 #if ENABLE_RUNTIME_INSTRUMENTATION
 	PMF_CAPTURE_TIMESTAMP(bl_svc, BL2_ENTRY, PMF_CACHE_MAINT);
 #endif
-	if(!uartDisable){	
-	NOTICE("BL2: %s\n", version_string);
-	NOTICE("BL2: %s\n", build_message);
+	if (!uartDisable) {
+		NOTICE("BL2: %s\n", version_string);
+		NOTICE("BL2: %s\n", build_message);
 
-	NOTICE("\nCurrent in %s\n", CURRENT_BL2	);
+		NOTICE("\nCurrent in %s\n", CURRENT_BL2	);
 	}
+
 	/* Perform remaining generic architectural setup in S-EL1 */
 	bl2_arch_setup();
 
@@ -170,9 +171,9 @@ void bl2_main(void)
 	 */
 	smc(BL1_SMC_RUN_IMAGE, (unsigned long)next_bl_ep_info, 0, 0, 0, 0, 0, 0);
 #else /* if BL2_RUNS_AT_EL3 */
-	if(!uartDisable){
-	NOTICE("BL2: Booting " NEXT_IMAGE "\n");
-	}
+	if (!uartDisable)
+		NOTICE("BL2: Booting " NEXT_IMAGE "\n");
+
 	print_entry_point_info(next_bl_ep_info);
 #if ENABLE_RUNTIME_INSTRUMENTATION
 	PMF_CAPTURE_TIMESTAMP(bl_svc, BL2_EXIT, PMF_CACHE_MAINT);

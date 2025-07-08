@@ -171,11 +171,11 @@ int clk_src_switch (enum e_clk_src clk_src)
     /* set "L2C SRAM interface and MCU_BIU clock divider" as "1/1*CPU Clock" for XTAL or "1/2*CPU Clock" for others */
     val = readReg(CR_ACLKEN_DIV);
     val &= (~0x1f);
-    #if !defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7552) && !defined(TCSUPPORT_CPU_AN7583)
+#if !defined(TCSUPPORT_CPU_EN7581) && !defined(TCSUPPORT_CPU_AN7552) && !defined(TCSUPPORT_CPU_AN7583)
     if (clk_src==clk_src_xtal)
         val |= 0x01;
     else
-    #endif
+#endif
         val |= 0x12;
     writeReg(CR_ACLKEN_DIV, val);
 
