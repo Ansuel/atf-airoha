@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <string.h>
 
+#include <plat_private.h>
 #include <platform_def.h>
 
 #include <common/bl_common.h>
@@ -29,6 +30,9 @@
 #endif /* TRUSTED_BOARD_BOOT */
 
 /* IO devices */
+#if defined(IMAGE_BL23)
+static uintptr_t ubi_dev_handle;
+#endif
 static const io_dev_connector_t *fip_dev_con;
 static uintptr_t fip_dev_handle;
 static const io_dev_connector_t *memmap_dev_con;
@@ -105,6 +109,9 @@ static const io_uuid_spec_t tos_fw_cert_uuid_spec = {
 #endif
 #endif /* TRUSTED_BOARD_BOOT */
 
+#if defined(IMAGE_BL23)
+static int check_ubi(const uintptr_t spec);
+#endif
 static int open_fip(const uintptr_t spec);
 static int open_memmap(const uintptr_t spec);
 static int open_enc_fip(const uintptr_t spec);
@@ -120,6 +127,14 @@ static const struct plat_io_policy fip_memmap_policy = {
 	.image_spec = (uintptr_t)&fip_block_spec,
 	.check = open_memmap,
 };
+
+#if defined(IMAGE_BL23)
+static const struct plat_io_policy fip_ubi_policy = {
+	.dev_handle = &ubi_dev_handle,
+	.image_spec = (uintptr_t)NULL,
+	.check = check_ubi,
+};
+#endif
 
 static const struct plat_io_policy enc_policy = {
 	.dev_handle = &fip_dev_handle,
@@ -211,7 +226,7 @@ static const struct plat_io_policy tos_fw_cert_policy = {
 
 /* By default, load images from the FIP */
 static const struct plat_io_policy *policies[] = {
-	[FIP_IMAGE_ID] = &fip_memmap_policy,
+	/* [FIP_IMAGE_ID] set in plat_ecnt_io_setup */
 	[ENC_IMAGE_ID] = &enc_policy,
 	[BL2_IMAGE_ID] = &bl2_policy,
 
@@ -238,6 +253,17 @@ static const struct plat_io_policy *policies[] = {
 #endif
 #endif
 };
+
+#if defined(IMAGE_BL23)
+static int check_ubi(const uintptr_t spec)
+{
+	int result;
+
+	result = io_dev_init(ubi_dev_handle, (uintptr_t)NULL);
+
+	return result;
+}
+#endif
 
 static int open_fip(const uintptr_t spec)
 {
@@ -290,9 +316,22 @@ static int open_memmap(const uintptr_t spec)
 	return result;
 }
 
-void plat_ecnt_io_setup(void)
+void plat_ecnt_io_setup(const hw_trap_t *hw_trap)
 {
 	int io_result;
+
+	policies[FIP_IMAGE_ID] = &fip_memmap_policy;
+
+#if defined(IMAGE_BL23)
+	/* Expect UBI if we are on NAND AND we are not in recovery procedure */
+	if (!hw_trap->is_emmc &&
+	    (!hw_trap->fw_upgrade_mode || hw_trap->skip_fw_upgrade || plat_get_hw_bypass())) {
+		policies[FIP_IMAGE_ID] = &fip_ubi_policy;
+		io_result = mtk_fip_image_setup(&ubi_dev_handle,
+						&policies[FIP_IMAGE_ID]->image_spec);
+		assert(io_result == 0);
+	}
+#endif
 
 	io_result = register_io_dev_fip(&fip_dev_con);
 	assert(io_result == 0);

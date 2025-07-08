@@ -474,7 +474,7 @@ void bl2_platform_setup(void)
 #if !defined(IMAGE_BL21) && !defined(IMAGE_BL22)
 	hw_trap_init();
 	flash_init(&hw_trap);
-	plat_ecnt_io_setup();
+	plat_ecnt_io_setup(&hw_trap);
 #endif
 }
 #if !defined(IMAGE_BL21) && !defined(IMAGE_BL22)

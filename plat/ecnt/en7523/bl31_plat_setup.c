@@ -215,7 +215,7 @@ void bl31_platform_setup(void)
 	
 	efuse_init();
 
-	plat_ecnt_io_setup();
+	plat_ecnt_io_setup(NULL);
 
 	/* Initialize the gic cpu and distributor interfaces */
 	plat_arm_gic_driver_init();
