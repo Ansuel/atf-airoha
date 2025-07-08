@@ -105,5 +105,7 @@ int lzmaBuffToBuffDecompress(uintptr_t *inStream, size_t length, uintptr_t *outS
 		ERROR("LZMA: res %d state %d\n", res, state);
 	}
 
+	*outStream = round_up(*outStream + outProcessed, sizeof(uintptr_t ));
+
 	return res;
 }
