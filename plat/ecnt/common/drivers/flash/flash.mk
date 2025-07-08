@@ -17,20 +17,12 @@ FLASH_SRCS	+= $(addprefix drivers/io/ubi/,		\
 FLASH_SRCS	+= $(addprefix plat/ecnt/en7523/,	\
 				bl2_boot_nand_ubi.c)
 
-ifeq ($(TCSUPPORT_ATF_RELEASE),)
-FLASH_SRCS	+=	$(KERNEL_EXT_SPI_NAND_DIR)/spi_nand_flash.c			\
-				$(KERNEL_EXT_SPI_NAND_DIR)/spi_nand_flash_table.c	\
-				$(KERNEL_EXT_SPI_NAND_DIR)/spi_controller.c			\
-				$(KERNEL_EXT_SPI_NAND_DIR)/spi_ecc.c				\
-				$(KERNEL_EXT_SPI_NAND_DIR)/spi_nfi.c
-else
-FLASH_SRCS	+= $(addprefix drivers/mtd/chips/,	\
+FLASH_SRCS	+= $(addprefix plat/ecnt/common/drivers/flash/,	\
 				spi_nand_flash.c				\
 				spi_nand_flash_table.c			\
 				spi_controller.c				\
 				spi_ecc.c						\
 				spi_nfi.c)
-endif
 
 ifneq ($(TCSUPPORT_PARALLEL_NAND),)
 ifeq ($(TCSUPPORT_ATF_RELEASE),)
