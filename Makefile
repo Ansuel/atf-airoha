@@ -387,6 +387,10 @@ ifneq ($(strip $(TCSUPPORT_CPU_EN7581)),)
 $(eval $(call add_define,TCSUPPORT_CPU_EN7581))
 endif
 
+ifneq ($(strip $(TCSUPPORT_UART_DISABLE)),)
+$(eval $(call add_define,TCSUPPORT_UART_DISABLE))
+endif
+
 ifneq ($(strip $(TCSUPPORT_EMMC)),)
 $(eval $(call add_define,TCSUPPORT_EMMC))
 endif
