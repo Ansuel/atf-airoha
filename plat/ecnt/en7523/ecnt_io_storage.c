@@ -115,89 +115,128 @@ struct plat_io_policy {
 	int (*check)(const uintptr_t spec);
 };
 
-/* By default, load images from the FIP */
-static const struct plat_io_policy policies[] = {
-	[FIP_IMAGE_ID] = {
-		&memmap_dev_handle,
-		(uintptr_t)&fip_block_spec,
-		open_memmap
-	},
-	[ENC_IMAGE_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)NULL,
-		open_fip
-	},
-	[BL2_IMAGE_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&bl2_uuid_spec,
-		open_fip
-	},
-#if !defined(IMAGE_BL1)
-	[BL31_IMAGE_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&bl31_uuid_spec,
-		open_fip
-	},
-#ifdef TCSUPPORT_OPTEE
-	[BL32_IMAGE_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&bl32_uuid_spec,
-		open_fip
-	},
-#endif
-	[BL33_IMAGE_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&bl33_uuid_spec,
-		open_fip
-	},
-#endif
-#if TRUSTED_BOARD_BOOT
-	[TRUSTED_BOOT_FW_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&tb_fw_cert_uuid_spec,
-		open_fip
-	},
-#if !defined(IMAGE_BL1)
-	[TRUSTED_KEY_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&trusted_key_cert_uuid_spec,
-		open_fip
-	},
-	[SOC_FW_KEY_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&soc_fw_key_cert_uuid_spec,
-		open_fip
-	},
-	[NON_TRUSTED_FW_KEY_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&nt_fw_key_cert_uuid_spec,
-		open_fip
-	},
-	[SOC_FW_CONTENT_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&soc_fw_cert_uuid_spec,
-		open_fip
-	},
-	[NON_TRUSTED_FW_CONTENT_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&nt_fw_cert_uuid_spec,
-		open_fip
-	},
-#ifdef TCSUPPORT_OPTEE
-	[TRUSTED_OS_FW_KEY_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&tos_fw_key_cert_uuid_spec,
-		open_fip
-	},
-	[TRUSTED_OS_FW_CONTENT_CERT_ID] = {
-		&fip_dev_handle,
-		(uintptr_t)&tos_fw_cert_uuid_spec,
-		open_fip
-	},
+static const struct plat_io_policy fip_memmap_policy = {
+	.dev_handle = &memmap_dev_handle,
+	.image_spec = (uintptr_t)&fip_block_spec,
+	.check = open_memmap,
+};
 
-#endif	
+static const struct plat_io_policy enc_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)NULL,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy bl2_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&bl2_uuid_spec,
+	.check = open_fip,
+};
+
+#if !defined(IMAGE_BL1)
+static const struct plat_io_policy bl31_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&bl31_uuid_spec,
+	.check = open_fip,
+};
+
+#ifdef TCSUPPORT_OPTEE
+static const struct plat_io_policy bl32_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&bl32_uuid_spec,
+	.check = open_fip,
+};
 #endif
+
+static const struct plat_io_policy bl33_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&bl33_uuid_spec,
+	.check = open_fip,
+};
+#endif
+
+#if TRUSTED_BOARD_BOOT
+static const struct plat_io_policy tb_fw_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&tb_fw_cert_uuid_spec,
+	.check = open_fip,
+};
+
+#if !defined(IMAGE_BL1)
+static const struct plat_io_policy trusted_key_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&trusted_key_cert_uuid_spec,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy soc_fw_key_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&soc_fw_key_cert_uuid_spec,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy nt_fw_key_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&nt_fw_key_cert_uuid_spec,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy soc_fw_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&soc_fw_cert_uuid_spec,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy nt_fw_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&nt_fw_cert_uuid_spec,
+	.check = open_fip,
+};
+
+#ifdef TCSUPPORT_OPTEE
+static const struct plat_io_policy tos_fw_key_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&tos_fw_key_cert_uuid_spec,
+	.check = open_fip,
+};
+
+static const struct plat_io_policy tos_fw_cert_policy = {
+	.dev_handle = &fip_dev_handle,
+	.image_spec = (uintptr_t)&tos_fw_cert_uuid_spec,
+	.check = open_fip,
+};
+#endif /* TCSUPPORT_OPTEE */
+#endif /* !IMAGE_BL1 */
 #endif /* TRUSTED_BOARD_BOOT */
+
+/* By default, load images from the FIP */
+static const struct plat_io_policy *policies[] = {
+	[FIP_IMAGE_ID] = &fip_memmap_policy,
+	[ENC_IMAGE_ID] = &enc_policy,
+	[BL2_IMAGE_ID] = &bl2_policy,
+
+#if !defined(IMAGE_BL1)
+	[BL31_IMAGE_ID] = &bl31_policy,
+#ifdef TCSUPPORT_OPTEE
+	[BL32_IMAGE_ID] = &bl32_policy,
+#endif
+	[BL33_IMAGE_ID] = &bl33_policy,
+#endif
+
+#if TRUSTED_BOARD_BOOT
+	[TRUSTED_BOOT_FW_CERT_ID] = &tb_fw_cert_policy,
+#if !defined(IMAGE_BL1)
+	[TRUSTED_KEY_CERT_ID] = &trusted_key_cert_policy,
+	[SOC_FW_KEY_CERT_ID] = &soc_fw_key_cert_policy,
+	[NON_TRUSTED_FW_KEY_CERT_ID] = &nt_fw_key_cert_policy,
+	[SOC_FW_CONTENT_CERT_ID] = &soc_fw_cert_policy,
+	[NON_TRUSTED_FW_CONTENT_CERT_ID] = &nt_fw_cert_policy,
+#ifdef TCSUPPORT_OPTEE
+	[TRUSTED_OS_FW_KEY_CERT_ID] = &tos_fw_key_cert_policy,
+	[TRUSTED_OS_FW_CONTENT_CERT_ID] = &tos_fw_cert_policy,
+#endif
+#endif
+#endif
 };
 
 static int open_fip(const uintptr_t spec)
@@ -293,7 +332,7 @@ int plat_get_image_source(unsigned int image_id, uintptr_t *dev_handle,
 
 	assert(image_id < ARRAY_SIZE(policies));
 
-	policy = &policies[image_id];
+	policy = policies[image_id];
 	result = policy->check(policy->image_spec);
 	if (result == 0)
 	{
