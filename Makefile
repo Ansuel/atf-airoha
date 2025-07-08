@@ -385,6 +385,18 @@ endif
 
 ifneq ($(strip $(TCSUPPORT_CPU_EN7581)),)
 $(eval $(call add_define,TCSUPPORT_CPU_EN7581))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7523))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7512))
+$(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
+$(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
+endif
+
+ifneq ($(strip $(TCSUPPORT_CPU_AN7583)),)
+$(eval $(call add_define,TCSUPPORT_CPU_AN7583))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7523))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7512))
+$(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
+$(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
 endif
 
 ifneq ($(strip $(TCSUPPORT_UART_DISABLE)),)
