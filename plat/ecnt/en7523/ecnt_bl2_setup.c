@@ -467,6 +467,15 @@ void bl2_plat_preload_setup(void)
 		}
 	}
 #endif
+
+#ifdef IMAGE_BL23
+	/* Read BL31+U-Boot from offset for eMMC. For NAND FIP is read by UBI module */
+	if (hw_trap.is_emmc &&
+	    (!hw_trap.fw_upgrade_mode || hw_trap.skip_fw_upgrade || plat_get_hw_bypass())) {
+		if (flash_read(PLAT_ECNT_BL31_FIP_OFFSET, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *) PLAT_ECNT_FIP_BASE) != FLASH_READ_STATUS_CORRECT)
+			panic();
+	}
+#endif
 }
 
 void bl2_platform_setup(void)
