@@ -69,7 +69,11 @@ typedef union {
 
 #pragma weak dramc_main
 
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
 extern void en7523_packageID_init(void);
+#else
+void en7523_packageID_init(void) {}
+#endif
 extern uint32_t uartDisable;
 /* function mainly for FPGA use
  * ASIC dramc_main() will be defined in dramc driver

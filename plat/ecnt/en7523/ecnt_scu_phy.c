@@ -16,7 +16,7 @@
 #include <asm/tc3162.h>
 #endif
 #include <asm/io.h>
-#include <modules/avs/avs.h>
+#include <ecnt_avs.h>
 
 
 //RG address, base: 0x1fa20000

@@ -330,7 +330,11 @@ void plat_ecnt_io_setup(const hw_trap_t *hw_trap)
 
 #if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 	/* Expect UBI if we are on NAND AND we are not in recovery procedure */
+#if defined(TCSUPPORT_EMMC)
 	if (!hw_trap->is_emmc &&
+#else
+	if (
+#endif
 	    (!hw_trap->fw_upgrade_mode || hw_trap->skip_fw_upgrade || plat_get_hw_bypass())) {
 		policies[FIP_IMAGE_ID] = &fip_ubi_policy;
 		io_result = mtk_fip_image_setup(&ubi_dev_handle,

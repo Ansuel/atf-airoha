@@ -472,7 +472,7 @@ void bl2_plat_preload_setup(void)
 	}
 #endif
 
-#ifdef IMAGE_BL23
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_EMMC)
 	/* Read BL31+U-Boot from offset for eMMC. For NAND FIP is read by UBI module */
 	if (hw_trap.is_emmc &&
 	    (!hw_trap.fw_upgrade_mode || hw_trap.skip_fw_upgrade || plat_get_hw_bypass())) {

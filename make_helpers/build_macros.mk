@@ -570,6 +570,8 @@ $(ELF): $(OBJS) $(DEFAULT_LINKER_SCRIPT) $(LINKER_SCRIPTS) | $(1)_dirs libraries
 endif
 ifneq ($(TCSUPPORT_BB_FIX_UNOPEN),0)
 ifeq ($(IMAGE_BL22),1)
+ifneq ($(TCSUPPORT_CPU_EN7581)$(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_AN7552),)
+	# an7581, an7583, an7552
 	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/efuse* $(BUILD_DIR)/ ;
 	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/Hal_io.o $(BUILD_DIR)/ ;
 	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/DDR3_dram_init.o $(BUILD_DIR)/ ;
@@ -597,6 +599,15 @@ ifeq ($(IMAGE_BL22),1)
 	-cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramc_selfrefresh_api.o $(BUILD_DIR)/ ;
 	-cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramtest.o $(BUILD_DIR)/ ;
 	-cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/ecnt_avs.o $(BUILD_DIR)/ ;
+else
+	# en7523
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/efuse* $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/hal_io.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramc_pi_basic_api.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramc_pi_calibration_api.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramc_pi_main.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl22/dramc.o $(BUILD_DIR)/ ;
+endif
 endif
 ifeq ($(IMAGE_BL23),1)
 	cp -rf $(ECNT_PLAT)/blobs/$(SOC_SUB_DIR)/bl23/efuse* $(BUILD_DIR)/ ;

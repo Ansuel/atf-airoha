@@ -382,6 +382,13 @@ ifneq ($(strip $(MT7510_EN7512_FPGA_STAGE)),)
 $(eval $(call add_define,MT7510_EN7512_FPGA_STAGE))
 endif
 
+ifneq ($(strip $(TCSUPPORT_CPU_EN7523)),)
+$(eval $(call add_define,TCSUPPORT_CPU_EN7523))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7512))
+$(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
+endif
+
 ifneq ($(strip $(TCSUPPORT_CPU_EN7581)),)
 $(eval $(call add_define,TCSUPPORT_CPU_EN7581))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7523))

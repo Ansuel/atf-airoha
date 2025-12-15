@@ -363,12 +363,22 @@ ifeq ($(TCSUPPORT_ATF_RELEASE),)
 endif
 endif
 else
+ifneq ($(TCSUPPORT_ATF_RELEASE),)
 	BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/ddr_cal/en7523/hal_io.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_basic_api.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_calibration_api.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_main.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc.c				\
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+else
+	BL2_UNOPEN_SOURCES +=	${ECNT_PLAT}/common/drivers/ddr_cal/en7523/hal_io.c				\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_basic_api.c			\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_calibration_api.c		\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_main.c			\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc.c				\
+				${ECNT_PLAT}/common/drivers/efuse/$(EFUSE_DRIVER)				\
+				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+endif
 endif
 endif
 endif
@@ -430,9 +440,16 @@ endif
 endif
 
 else
+ifneq ($(TCSUPPORT_ATF_RELEASE),)
 	BL2_SOURCES			+= 	${ECNT_PLAT_SOC}/ecnt_avs.c							\
 				${ECNT_PLAT_SOC}/ecnt_scu_phy.c						\
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+else
+	BL2_SOURCES		+=	${ECNT_PLAT_SOC}/ecnt_avs.c						\
+					${ECNT_PLAT_SOC}/ecnt_scu_phy.c
+	BL2_UNOPEN_SOURCES	+=	${ECNT_PLAT}/common/drivers/efuse/$(EFUSE_DRIVER)			\
+					${ECNT_PLAT}/common/drivers/efuse_load/${SOC_SUB_DIR}/efuse_load.c
+endif
 endif
 endif
 
