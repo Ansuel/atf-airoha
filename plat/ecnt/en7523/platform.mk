@@ -691,7 +691,10 @@ endif
 endif
 else
 				
-	BL31_SOURCES		+=	${ECNT_PLAT}/common/drivers/efuse/efuse.c		\
+ifeq ($(EFUSE_DISABLE),)
+	BL31_SOURCES		+=	${ECNT_PLAT}/common/drivers/efuse/efuse.c
+endif
+	BL31_SOURCES		+= \
 				${ECNT_PLAT_SOC}/ecnt_avs.c							\
 				${ECNT_PLAT_SOC}/ecnt_scu_phy.c
 endif

@@ -210,7 +210,9 @@ void bl31_platform_setup(void)
 	/* setup the TZPC attr here*/ 
 	set_tzpc_attr();
 	
+#ifndef EFUSE_DISABLE
 	efuse_init();
+#endif
 
 	plat_ecnt_io_setup(NULL);
 
