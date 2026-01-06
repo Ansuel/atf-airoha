@@ -417,8 +417,11 @@ int fill_io_block_spec_gpt(io_block_spec_t *spec, const char *name)
 	const partition_entry_t *entry;
 
 	entry = get_partition_entry(name);
-	if (!entry)
-		panic();
+	if (!entry) {
+		WARN("No partition '%s' found, will read FIP from fixed offset 0x%x\n",
+		     name, PLAT_ECNT_BL31_FIP_OFFSET);
+		return -EINVAL;
+	}
 
 	INFO("Found partition '%s' at 0x%zx, size 0x%zx\n",
 	     name, (size_t)entry->start, (size_t)entry->length);
