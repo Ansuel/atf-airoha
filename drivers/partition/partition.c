@@ -236,7 +236,7 @@ static int load_partition_gpt(uintptr_t image_handle,
 {
 	const signed long long gpt_entry_offset = LBA(part_lba);
 	gpt_entry_t entry;
-	int result, i;
+	int result, i, cnt;
 
 	result = io_seek(image_handle, IO_SEEK_SET, gpt_entry_offset);
 	if (result != 0) {
@@ -245,7 +245,7 @@ static int load_partition_gpt(uintptr_t image_handle,
 		return result;
 	}
 
-	for (i = 0; i < list.entry_count; i++) {
+	for (i = cnt = 0; i < list.entry_count; i++) {
 		result = load_gpt_entry(image_handle, &entry);
 		if (result != 0) {
 			VERBOSE("Failed to load gpt entry data(%i) error is (%i)\n",
@@ -253,12 +253,15 @@ static int load_partition_gpt(uintptr_t image_handle,
 			return result;
 		}
 
-		result = parse_gpt_entry(&entry, &list.list[i]);
+		result = parse_gpt_entry(&entry, &list.list[cnt]);
 		if (result != 0) {
-			break;
+			/* unused gpt entry */
+			continue;
 		}
+
+		cnt++;
 	}
-	if (i == 0) {
+	if (cnt == 0) {
 		VERBOSE("No Valid GPT Entries found\n");
 		return -EINVAL;
 	}
@@ -266,7 +269,7 @@ static int load_partition_gpt(uintptr_t image_handle,
 	 * Only records the valid partition number that is loaded from
 	 * partition table.
 	 */
-	list.entry_count = i;
+	list.entry_count = cnt;
 	dump_entries(list.entry_count);
 
 	return 0;
