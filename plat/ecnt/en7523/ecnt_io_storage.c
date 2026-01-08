@@ -315,6 +315,13 @@ static int open_memmap(const uintptr_t spec)
 	return result;
 }
 
+#if defined(IMAGE_BL23)
+void plat_ecnt_io_switch_to_memmap(void)
+{
+	policies[FIP_IMAGE_ID] = &fip_memmap_policy;
+}
+#endif
+
 void plat_ecnt_io_setup(const hw_trap_t *hw_trap)
 {
 	int io_result;
