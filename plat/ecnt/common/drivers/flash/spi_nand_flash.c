@@ -5076,6 +5076,7 @@ SPI_NAND_FLASH_RTN_T SPI_NAND_Flash_Init(u32 rom_base)
 	SPI_NFI_CONF_SPARE_SIZE_T   spare_size_t;
 	SPI_NAND_FLASH_RTN_T	rtn_status = SPI_NAND_FLASH_RTN_PROBE_ERROR;	
 	int						ret = 0;
+	int dma_on = 0;
 
 #ifdef TCSUPPORT_DSL_PHYMODE
 #if defined(TCSUPPORT_2_6_36_KERNEL) || defined(TCSUPPORT_3_18_21_KERNEL)
@@ -5193,7 +5194,7 @@ SPI_NAND_FLASH_RTN_T SPI_NAND_Flash_Init(u32 rom_base)
 			 *   BL2 is worked at L2C or FW SRAM, SPI controller DMA does not support these two SRAM
 			 *
 			 * Our notice:
-			 *   BL23 on AN7581/AN7583 SoCs uses normal RAM for flash
+			 *   BL23 on EN7523/AN7581/AN7583 SoCs uses normal RAM for flash
 			 *   reading, see
 			 *     - code of spi_buf_init(),
 			 *     - usage of dma_read_page, dma_write_page variables
@@ -5203,8 +5204,20 @@ SPI_NAND_FLASH_RTN_T SPI_NAND_Flash_Init(u32 rom_base)
 			 *     - _current_cache_page_oob, _current_cache_page_oob_mapping
 			 *
 			 * Thus we can safely enable DMA for these SoCs during BL23 stage.
+			 *
+			 * Unfortunately there is a EN7523 SoC specific hardware bug leading
+			 * to flash data damaging if UART_TX bootstrap pin was short to GND
+			 * on board powering. Detect this issue and disable DMA to prevent
+			 * flash data damaging.
 			 */
 			if (isEN7581 || isAN7583) {
+				dma_on = 1;
+			} else if (isEN7523 && (get_sfc_strap() & 0x04)) {
+				/* en7523 UART_TX bootstrap pin is OK */
+				dma_on = 1;
+			}
+
+			if (dma_on) {
 				/* Setup NFI */
 				spi_nfi_conf_t.auto_fdm_t			= SPI_NFI_CON_AUTO_FDM_Disable;
 				spi_nfi_conf_t.hw_ecc_t 			= SPI_NFI_CON_HW_ECC_Disable;
