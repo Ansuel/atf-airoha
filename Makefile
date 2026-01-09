@@ -388,6 +388,7 @@ $(eval $(call add_define,TCSUPPORT_CPU_EN7523))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7512))
 $(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
 $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
 endif
 
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)),)
@@ -396,6 +397,7 @@ $(eval $(call add_define,TCSUPPORT_CPU_EN7523))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7512))
 $(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
 $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
 endif
 
 ifneq ($(strip $(TCSUPPORT_EMMC)),)
@@ -408,6 +410,10 @@ endif
 
 ifneq ($(strip $(OVERRIDE_UBI_START_ADDR)),)
 $(eval $(call add_define_val,OVERRIDE_UBI_START_ADDR,$(OVERRIDE_UBI_START_ADDR)))
+endif
+
+ifneq ($(strip $(TCSUPPORT_SPI_NAND_FLASH_ECC_DMA)),)
+$(eval $(call add_define,TCSUPPORT_SPI_NAND_FLASH_ECC_DMA))
 endif
 
 ifneq ($(strip $(TCSUPPORT_TPL_SUPPORT)),)

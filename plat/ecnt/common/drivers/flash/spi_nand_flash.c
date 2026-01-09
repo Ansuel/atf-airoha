@@ -5014,9 +5014,24 @@ SPI_NAND_FLASH_RTN_T SPI_NAND_Flash_Init(u32 rom_base)
 		} else {
 			_SPI_NAND_PRINTF("Using Flash ECC.\n");
 			SPI_NAND_Flash_Enable_OnDie_ECC();
-#if defined(TCSUPPORT_SPI_NAND_FLASH_ECC_DMA) && !defined(IMAGE_BL2)
-			/* BL2 is worked at L2C or FW SRAM, SPI controller DMA does not support these two SRAM */
-			if(GET_HIR() >= EN7526C_HIR) {
+#if defined(TCSUPPORT_SPI_NAND_FLASH_ECC_DMA) && (!defined(IMAGE_BL2) || defined(IMAGE_BL23))
+			/*
+			 * Original Airoha comment:
+			 *   BL2 is worked at L2C or FW SRAM, SPI controller DMA does not support these two SRAM
+			 *
+			 * Our notice:
+			 *   BL23 on AN7581/AN7583 SoCs uses normal RAM for flash
+			 *   reading, see
+			 *     - code of spi_buf_init(),
+			 *     - usage of dma_read_page, dma_write_page variables
+			 *   and definitions of:
+			 *     - tmp_dma_read_page, tmp_dma_write_page
+			 *     - _current_cache_page, _current_cache_page_data,
+			 *     - _current_cache_page_oob, _current_cache_page_oob_mapping
+			 *
+			 * Thus we can safely enable DMA for these SoCs during BL23 stage.
+			 */
+			if (isEN7581 || isAN7583) {
 				/* Setup NFI */
 				spi_nfi_conf_t.auto_fdm_t			= SPI_NFI_CON_AUTO_FDM_Disable;
 				spi_nfi_conf_t.hw_ecc_t 			= SPI_NFI_CON_HW_ECC_Disable;
