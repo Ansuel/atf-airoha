@@ -74,7 +74,7 @@ static io_ubi_dev_spec_t nand_ubi_dev_spec = {
 	.ubi = (struct ubi_scan_info *)SCRATCH_BUF_OFFSET,
 	.is_bad_peb = nand_ubispl_is_bad_block,
 	.read = nand_ubispl_read,
-	.fastmap = 0,
+	.fastmap = 1,
 };
 
 static const io_ubi_spec_t ubi_dev_fip_spec = {
