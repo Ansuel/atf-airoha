@@ -404,6 +404,10 @@ ifneq ($(strip $(TCSUPPORT_EMMC)),)
 $(eval $(call add_define,TCSUPPORT_EMMC))
 endif
 
+ifneq ($(strip $(OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET)),)
+$(eval $(call add_define_val,OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET,$(OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET)))
+endif
+
 ifneq ($(strip $(TCSUPPORT_UBI_SUPPORT)),)
 $(eval $(call add_define,TCSUPPORT_UBI_SUPPORT))
 endif
