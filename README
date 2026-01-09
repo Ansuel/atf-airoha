@@ -1,0 +1,92 @@
+This file describes how to build Airoha ATF from sources.
+
+REQUIREMENTS:
+ * Airoha AN7581/AN7583 SDK (2025Q1 or newer)
+ * Airoha EN7523 SDK (for en7523 builds only)
+
+1) Build Airoha SDK. The following utility is required
+
+    * trx-airoha -- airoha specific trx utility
+
+2) In the EN7523 SoC case
+
+   * Create 'plat/ecnt/blobs/en7523' directory
+
+   * Fill 'plat/ecnt/blobs/en7523' directory with the files from
+     Airoha EN7523 SDK. The following file structure MUST be created:
+
+        /"
+        +-- bl1.bin"
+        +-- bl22"
+        |     +-- dramc.o"
+        |     +-- dramc_pi_basic_api.o"
+        |     +-- dramc_pi_calibration_api.o"
+        |     +-- dramc_pi_main.o"
+        |     +-- efuse_load.o"
+        |     +-- efuse.o"
+        |     +-- hal_io.o"
+        +-- bl23"
+        |     +-- cortex_a53.o"
+        |     +-- ecnt_npu_img.o"
+        |     +-- efuse_load.o"
+        |     +-- efuse.o"
+        +-- bl31.bin"
+
+     bl1.bin, bl31.bin     -- take files from directory
+                              ${SDK32}/airoha_feeds/package/airoha/bootloader/bootloader/unopen_img/${profile}/atf
+
+     dramc.o, cortex_a53.o -- take files from directory
+                              ${SDK32}/airoha_feeds/package/airoha/bootloader/bootloader/unopen_img/${profile}/atf/bl2
+
+     other object files    -- extract from archieve
+                              ${SDK32}/airoha_feeds/package/airoha/bootloader/bootloader/unopen_img/${profile}/atf/bl2/libbl2.a
+
+3) Prepare building directory with the following command
+
+     ${this_repo_path}/scripts/build-prepare.sh
+
+4) Enter to the build directory
+
+     cd atf-airoha-build/build
+
+5) If necessary, edit build-${SOC}.sh scripts to tune your build options
+
+   You may need to tune following options
+
+     * OPTEE                               -- enable optee
+     * OVERRIDE_UBI_START_ADDR             -- where to find UBI spi-nand partition
+     * TCSUPPORT_GPT_ATF_SUPPORT           -- search for fip image in GPT 'fip' partition
+     * OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET  -- read fip image from specified eMMC offset
+                                              if TCSUPPORT_GPT_ATF_SUPPORT is not set
+                                              or GPT 'fip' partition was not found
+
+   Current settings are:
+     * OPTEE=no
+     * OVERRIDE_UBI_START_ADDR=0x100000
+     * TCSUPPORT_GPT_ATF_SUPPORT -- enabled
+     * OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET=0x84000
+
+   OpenWrt compatible settings are:
+     * optee -- disabled
+     * OVERRIDE_UBI_START_ADDR=0x20000
+     * TCSUPPORT_GPT_ATF_SUPPORT is not set
+     * OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET is not set or OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET=0x20000
+
+   Please fix in the script all places where these defines are mentioned.
+
+   WARNING: OpenWRT settings are incompatible with spi-nand flashes that
+            have 256 KB erase block.
+
+6) Build ATF images
+
+      $ ./build-${SOC}.sh
+
+   resulting images will be stored in
+
+     out/${SOC}/
+
+   directory
+
+7) You may also run 'build-flash-images.sh' to create ready to flash ATF images
+
+8) Have fun!
