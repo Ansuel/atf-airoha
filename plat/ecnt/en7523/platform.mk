@@ -487,6 +487,7 @@ endif
 				${ECNT_PLAT_SOC}/ecnt_cpufreq.c						\
 				${ECNT_PLAT_SOC}/ecnt_scu.c						\
 				${ECNT_PLAT}/common/ecnt_plat_common.c				\
+				${ECNT_PLAT}/common/ecnt_plat_mbedtls.c				\
 				${ECNT_PLAT}/common/ecnt_decrypt_dm_key.c			\
 				${ECNT_PLAT_SOC}/${ARCH}/plat_helpers.S				\
 				${ECNT_PLAT_SOC}/platform_common.c					\

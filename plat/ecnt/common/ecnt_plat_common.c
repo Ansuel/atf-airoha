@@ -615,8 +615,6 @@ unsigned int iter_time = 0;
 unsigned int key_length = 0;
 unsigned int hash_algo = 0;
 
-extern int mbedtls_pkcs5_pbkdf2_compare (char *account, char *password, unsigned char *login_auth, unsigned int iter_time, unsigned int key_length, unsigned int hash_algo);
-
 uint64_t ecnt_password_verify(uint32_t r2, uint32_t r3)
 {
 	uintptr_t base = page_align((uintptr_t) r2, DOWN);
@@ -629,7 +627,7 @@ uint64_t ecnt_password_verify(uint32_t r2, uint32_t r3)
 		char *password = ((char *) ((uintptr_t) base + r3));
 		unsigned char *login_info = ((unsigned char *) ((uintptr_t) base + (r3*2)));
 
-		if (mbedtls_pkcs5_pbkdf2_compare (username, password, login_info, iter_time, key_length, hash_algo) != 0)
+		if (ecnt_mbedtls_pkcs5_pbkdf2_compare (username, password, login_info, iter_time, key_length, hash_algo) != 0)
 		{
 			ret = ECNT_SIP_E_INVALID_PARAM;
 		}

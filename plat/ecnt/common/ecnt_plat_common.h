@@ -91,6 +91,10 @@ uint64_t ecnt_decrypt_handler(uint32_t id, uint32_t r1, uint32_t r2, uint32_t r3
 uint64_t ecnt_password_verify_handler(uint32_t r1, uint32_t r2, uint32_t r3);
 uint64_t ecnt_decrypt_dm_key_handler(uint32_t r1, uint32_t r2, uint32_t r3);
 
+#if defined(IMAGE_BL31)
+int ecnt_mbedtls_pkcs5_pbkdf2_compare (char *account, char *password, unsigned char *login_auth, unsigned int iter_time, unsigned int key_length, unsigned int hash_algo);
+#endif
+
 uint64_t ecnt_avs_handler(uint32_t r1, uint32_t r2, uint32_t r3);
 uint64_t ecnt_sref_handler(uint32_t r1);
 uint64_t phy_efuse_handler(uint32_t r1);
