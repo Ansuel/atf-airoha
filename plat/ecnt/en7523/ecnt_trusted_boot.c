@@ -46,7 +46,7 @@ unsigned int* get_secure_data_base(void)
 
 unsigned char* get_ssk(void)
 {
-	return (unsigned int* )&secure_data.ssk;
+	return (unsigned char* )&secure_data.ssk;
 }
 
 
