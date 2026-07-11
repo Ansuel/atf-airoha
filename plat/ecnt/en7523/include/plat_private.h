@@ -61,6 +61,7 @@ int get_asic_mode_by_efuse(void);
 int get_into_inic(void);
 int get_valid(void);
 int decrypt_dm_key(uint8_t *p_buf, unsigned int size);
+int decrypt_gcm_data(uint8_t *buffer, unsigned int size);
 #ifdef TCSUPPORT_CPU_AN7583
 int get_anti_rb_en(void);
 

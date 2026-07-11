@@ -117,7 +117,7 @@ uintptr_t ecnt_sip_handler(uint32_t smc_fid,
 				if(status){
 					printf(" mmap fail, err=%d \n", status);
 				}else{
-					ret = decrypt_gcm_data((uint32_t)x1, (uint32_t)x2, (uint32_t)x3);
+					ret = decrypt_gcm_data((uint8_t *)x1, (uint32_t)x2);
 					mmap_remove_dynamic_region((uintptr_t) mmap_base, mmap_size);
 					SMC_RET1(handle, ret);
 				}
