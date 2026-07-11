@@ -60,7 +60,7 @@ static int nand_ubispl_read(uint32_t pnum, unsigned long offset,
 
 	addr = (uint32_t)pnum * block_size + offset;
 
-	ret = nandflash_read(addr, len, &len_read, (uintptr_t)dst, &status);
+	ret = nandflash_read(addr, len, &len_read, dst, &status);
 	if (ret) {
 		ERROR("nand_read(%" PRIu32 ") failed with %d. %zu bytes read\n",
 		      addr, ret, len_read);
