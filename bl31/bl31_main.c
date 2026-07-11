@@ -17,6 +17,7 @@
 #include <common/feat_detect.h>
 #include <common/runtime_svc.h>
 #include <drivers/console.h>
+#include <drivers/delay_timer.h>
 #include <lib/bootmarker_capture.h>
 #include <lib/el3_runtime/context_mgmt.h>
 #include <lib/pmf/pmf.h>
