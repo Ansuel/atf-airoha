@@ -7,6 +7,9 @@
 
 #include <errno.h>
 #include <inttypes.h>
+
+#include <plat_private.h>
+
 #include <common/debug.h>
 #include <drivers/io/io_driver.h>
 #include <drivers/io/io_ubi.h>
