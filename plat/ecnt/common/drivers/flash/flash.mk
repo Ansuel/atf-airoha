@@ -6,8 +6,7 @@
 
 FLASH_SRCS	:=	$(addprefix plat/ecnt/common/drivers/flash/,	\
 				flashhal.c										\
-				spi_nor_flash.c									\
-				bmt.c											)
+				spi_nor_flash.c										)
 
 BL2_CFLAGS	+= -march=armv8-a+crc
 FLASH_SRCS	+= $(addprefix drivers/io/ubi/,		\
