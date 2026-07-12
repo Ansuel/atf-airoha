@@ -14,8 +14,8 @@
 
 #include <en7523_def.h>
 #include "flashhal.h"
-#include "spi/spi_nand_flash.h"
-#include <spi/spi_controller.h>
+#include <ecnt_spi_nand_flash.h>
+#include <ecnt_spi_controller.h>
 #include "spi_nor_flash.h"
 #include <assert.h>
 #define NANDFLASH_HWTRAP	(mmio_read_32(EN7523_SFC_STRAP) & 0x2)

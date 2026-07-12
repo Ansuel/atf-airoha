@@ -112,12 +112,12 @@
 #include <dsl_phy_global/fttdp_inic.h>
 #endif
 
-#include "spi/spi_nand_flash.h"
-#include "spi/spi_controller.h"
-#include "spi/spi_nfi.h"
-#include "spi/spi_ecc.h"
-#include "spi/nand_flash_otp.h"
-#include <common/ecnt_chip_id.h>
+#include <ecnt_spi_nand_flash.h>
+#include <ecnt_spi_controller.h>
+#include <ecnt_spi_nfi.h>
+#include <ecnt_spi_ecc.h>
+#include <ecnt_nand_flash_otp.h>
+#include <ecnt_pkgid.h>
 
 #if defined(CONFIG_ECNT_UBOOT)
 #if !defined(IMAGE_BL2)

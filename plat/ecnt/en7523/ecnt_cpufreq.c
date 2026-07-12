@@ -7,7 +7,7 @@
 #include <asm/io.h>
 #include <common.h>
 #endif
-#include <modules/avs/avs.h>
+#include <ecnt_avs.h>
 #include <asm/tc3162.h>
 #include "ecnt_cpufreq.h"
 

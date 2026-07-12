@@ -2,7 +2,7 @@
 #define __BMT_H__
 
 #include <asm/tc3162.h>
-#include <spi/spi_nand_flash.h>
+#include <ecnt_spi_nand_flash.h>
 
 #if !defined(IMAGE_BL2)
 #define bool     u8

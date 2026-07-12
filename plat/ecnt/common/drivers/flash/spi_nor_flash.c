@@ -12,7 +12,7 @@
 #include <stdio.h>
 
 #include "spi_nor_flash.h"
-#include "spi/spi_controller.h"
+#include <ecnt_spi_controller.h>
 #include <en7523_def.h>
 
 #define _SPI_NOR_ENABLE_MANUAL_MODE				SPI_CONTROLLER_Enable_Manual_Mode

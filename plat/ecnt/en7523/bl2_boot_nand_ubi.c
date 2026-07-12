@@ -14,7 +14,7 @@
 #include <drivers/io/io_driver.h>
 #include <drivers/io/io_ubi.h>
 #include <drivers/nand.h>
-#include "spi/spi_nand_flash.h"
+#include <ecnt_spi_nand_flash.h>
 
 #ifdef OVERRIDE_UBI_START_ADDR
 #define UBI_START_ADDR			OVERRIDE_UBI_START_ADDR

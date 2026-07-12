@@ -14,7 +14,7 @@
 #include <linux/stdarg.h>
 #endif
 
-#include "spi/spi_ecc.h"
+#include <ecnt_spi_ecc.h>
 
 #if defined(CONFIG_ECNT_UBOOT) /* U-boot likes MIPS bootram, don't follow ARMV8 path */
 #undef TCSUPPORT_CPU_ARMV8

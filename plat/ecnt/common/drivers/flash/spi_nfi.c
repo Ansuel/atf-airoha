@@ -48,7 +48,7 @@
 #define SPI_NFI_DEBUG
 #endif
 
-#include "spi/spi_nfi.h"
+#include <ecnt_spi_nfi.h>
 
 #if defined(CONFIG_ECNT_UBOOT) /* U-boot likes MIPS bootram, don't follow ARMV8 path */
 #undef SPI_NFI_DEBUG

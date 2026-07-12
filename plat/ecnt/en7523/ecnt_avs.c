@@ -1,6 +1,6 @@
 #include <linux/version.h>
 #include <asm/io.h>
-#include <modules/avs/avs.h>
+#include <ecnt_avs.h>
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,30)
 #include <linux/sched.h>
 #else

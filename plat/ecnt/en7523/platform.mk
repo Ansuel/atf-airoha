@@ -86,9 +86,7 @@ PLAT_INCLUDES			:=	-I${ECNT_PLAT}/common/					\
 				-I${ECNT_PLAT_SOC}/include/							\
 				-Iinclude/plat/arm/common/							\
 				-Iinclude/drivers/io/								\
-				-Idrivers/io/ubi/									\
-				-I$(GLOBAL_INC_DIR)									\
-				-I$(GLOBAL_INC_DIR)/modules							\
+				-Idrivers/io/ubi/
 
 ifeq ($(CPU_BUS_BL2_TEST),1)
 PLAT_INCLUDES += -DCPU_BUS_BL2_TEST

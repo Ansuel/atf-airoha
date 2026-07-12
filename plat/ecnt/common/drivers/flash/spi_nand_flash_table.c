@@ -18,7 +18,7 @@
  *======================================================================================
  */
 
-#include "spi/spi_nand_flash.h"
+#include <ecnt_spi_nand_flash.h>
 
 #if !defined(TCSUPPORT_BL2_OPTIMIZATION) || defined(FLASH_TABLE_OPEN) || !defined(IMAGE_BL2)
 

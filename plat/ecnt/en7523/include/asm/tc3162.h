@@ -4,7 +4,7 @@
 #include <common/debug.h>
 #include <ecnt_scu.h>
 #include <asm/io.h>
-#include <cpu/pkgid.h>
+#include <ecnt_pkgid.h>
 #include <linux/types.h>
 
 

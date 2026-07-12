@@ -45,7 +45,7 @@
 #include <linux/types.h>
 #include <linux/version.h>
 
-#include <common/ecnt_chip_id.h>
+#include <ecnt_pkgid.h>
 
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,30)
 #include <linux/irqreturn.h>
@@ -63,8 +63,7 @@
 #include <linux/stdarg.h>
 #endif
 
-#include "spi/spi_controller.h"
-#include "newspiflash.h"
+#include <ecnt_spi_controller.h>
 
 #if defined(CONFIG_ECNT_UBOOT) /* U-boot likes MIPS bootram, don't follow ARMV8 path */
 #undef TCSUPPORT_CPU_ARMV8
