@@ -253,7 +253,7 @@ ifneq (${DEBUG}, 0)
 else
 	BUILD_TYPE	:=	release
 	# Use LOG_LEVEL_NOTICE by default for release builds
-	LOG_LEVEL	:=	40
+	LOG_LEVEL	:=	20
 endif #(Debug)
 
 # Default build string (git branch and commit)
@@ -396,10 +396,6 @@ $(eval $(call add_define,TCSUPPORT_CPU_EN7523))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7512))
 $(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
 $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
-endif
-
-ifneq ($(strip $(TCSUPPORT_UART_DISABLE)),)
-$(eval $(call add_define,TCSUPPORT_UART_DISABLE))
 endif
 
 ifneq ($(strip $(TCSUPPORT_EMMC)),)

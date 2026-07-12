@@ -103,8 +103,7 @@ static void check_Secure_Data (void)
  *****************************************************************************/
 void dyn_disable_auth(void)
 {
-	if (!uartDisable)
-		INFO("Disabling authentication of images dynamically\n");
+	INFO("Disabling authentication of images dynamically\n");
 
 	disable_auth = 1;
 
@@ -315,14 +314,12 @@ static int load_auth_image_internal(unsigned int image_id,
 {
 #if TRUSTED_BOARD_BOOT
 	if (dyn_is_auth_disabled() == 0) {
-		if (!uartDisable)
-			NOTICE("4-1\n");
+		INFO("4-1\n");
 
 		return load_auth_image_recursive(image_id, image_data, 0);
 	}
 #endif
-	if (!uartDisable)
-		NOTICE("4-2\n");
+	INFO("4-2\n");
 
 	return load_image(image_id, image_data);
 }
@@ -378,10 +375,8 @@ int load_auth_image(unsigned int image_id, image_info_t *image_data)
  ******************************************************************************/
 void print_entry_point_info(const entry_point_info_t *ep_info)
 {
-	if (!uartDisable) {
-		INFO("Entry point address = 0x%lx\n", ep_info->pc);
-		INFO("SPSR = 0x%x\n", ep_info->spsr);
-	}
+	INFO("Entry point address = 0x%lx\n", ep_info->pc);
+	INFO("SPSR = 0x%x\n", ep_info->spsr);
 
 #define PRINT_IMAGE_ARG(n)					\
 	VERBOSE("Argument #" #n " = 0x%llx\n",			\

@@ -60,7 +60,6 @@ extern int nandflash_init(int rom_base);
 extern int nandflash_read(unsigned long from, unsigned long len, u32 *retlen, unsigned char *buf, SPI_NAND_FLASH_RTN_T *status);
 extern int nandflash_write(unsigned long to, unsigned long len, u32 *retlen, unsigned char *buf);
 extern int nandflash_erase(unsigned long offset, unsigned long len);
-extern uint32_t uartDisable;
 
 static hw_trap_t *hwtrap;
 
@@ -148,9 +147,9 @@ FLASH_READ_STATUS_T flash_read(uint32_t from, uint32_t len, uint8_t *p_buf)
 	if (hwtrap->is_spi_nand_device_ecc ||
 		hwtrap->is_spi_nand_ctrl_ecc ||
 		hwtrap->is_parallel_nand) {
-		if(!uartDisable){
-		NOTICE("2-5-1\n");
-		}
+
+		INFO("2-5-1\n");
+
 		read_status = nandflash_read(from, len, &retlen, p_buf, &status);
 
 		if(read_status != 0)

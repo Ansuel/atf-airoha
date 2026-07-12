@@ -17,7 +17,6 @@
 static uintptr_t zalloc_start;
 static uintptr_t zalloc_end;
 static uintptr_t zalloc_current;
-extern uint32_t uartDisable;
 static void * MyAlloc(size_t size)
 {
 	uintptr_t p, p_end;
@@ -60,19 +59,15 @@ int lzmaBuffToBuffDecompress(uintptr_t *inStream, size_t length, uintptr_t *outS
 	zalloc_start = work_buf;
 	zalloc_end = work_buf + work_len;
 	zalloc_current = zalloc_start;
-	if(!uartDisable){
-		NOTICE("LZMA: Image address............... 0x%lx\n", *inStream);
-		NOTICE("LZMA: Properties address.......... 0x%lx\n", *inStream + LZMA_PROPERTIES_OFFSET);
-		NOTICE("LZMA: Uncompressed size address... 0x%lx\n", *inStream + LZMA_SIZE_OFFSET);
-		NOTICE("LZMA: Compressed data address..... 0x%lx\n", *inStream + LZMA_DATA_OFFSET);
-		NOTICE("LZMA: Destination address......... 0x%lx\n", *outStream);
-	}
+	INFO("LZMA: Image address............... 0x%lx\n", *inStream);
+	INFO("LZMA: Properties address.......... 0x%lx\n", *inStream + LZMA_PROPERTIES_OFFSET);
+	INFO("LZMA: Uncompressed size address... 0x%lx\n", *inStream + LZMA_SIZE_OFFSET);
+	INFO("LZMA: Compressed data address..... 0x%lx\n", *inStream + LZMA_DATA_OFFSET);
+	INFO("LZMA: Destination address......... 0x%lx\n", *outStream);
 	memset(&state, 0, sizeof(state));
 
-	if(!uartDisable){
-		NOTICE("LZMA: Uncompresed size............ 0x%zx\n", outProcessed);
-		NOTICE("LZMA: Compresed size.............. 0x%zx\n", compressedSize);
-	}
+	INFO("LZMA: Uncompresed size............ 0x%zx\n", outProcessed);
+	INFO("LZMA: Compresed size.............. 0x%zx\n", compressedSize);
 
 	for (i = 0; i < 8; i++) {
 		unsigned char b = ((unsigned char *) *inStream)[LZMA_SIZE_OFFSET + i];
@@ -96,9 +91,7 @@ int lzmaBuffToBuffDecompress(uintptr_t *inStream, size_t length, uintptr_t *outS
 	res = LzmaDecode((Byte *) *outStream, &outProcessed,
 			 ((Byte *) *inStream) + LZMA_DATA_OFFSET, &compressedSize,
 			 ((Byte *) *inStream) , LZMA_PROPS_SIZE, LZMA_FINISH_END, &state, &g_Alloc);
-	if(!uartDisable){
-		NOTICE("LZMA: Uncompresed ................ 0x%zx\n", outProcessed);
-	}
+	INFO("LZMA: Uncompresed ................ 0x%zx\n", outProcessed);
 
 	INFO("\033[33;1m 	decompressed data=> 0x%x-0x%x-0x%x-0x%x    \n\033[0m",*p,*(p+1), *(p+2), *(p+3));
 	if (res != SZ_OK) {

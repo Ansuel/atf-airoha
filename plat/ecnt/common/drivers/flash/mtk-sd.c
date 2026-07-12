@@ -263,7 +263,6 @@ static bool new_xfer;
 static size_t xfer_size;
 static uint32_t xfer_blocks;
 static uint32_t xfer_blocksz;
-extern uint32_t uartDisable;
 
 static struct mmc_device_info mtk_mmc_device_info = {
 	.mmc_dev_type = MMC_IS_SD,
@@ -939,9 +938,7 @@ int mtk_mmc_init(void)
 			msdc_bus_width = __bus_width[idx_bus_width];
 			ret = mmc_init(&mtk_mmc_ops, msdc_ck, msdc_bus_width, 0, &mtk_mmc_device_info);
 			if(ret == 0) {
-				if(!uartDisable){
-				printf("AIROHA eMMC init success.\n");
-				}
+				INFO("AIROHA eMMC init success.\n");
 				return ret;
 			}
 		}

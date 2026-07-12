@@ -123,16 +123,12 @@ unsigned int is_asic(void)
 {
 	if (get_asic_mode_by_efuse())
 	{
-		if(!uartDisable){
-		NOTICE("ASIC Mode by efuse\n");
-		}
+		INFO("ASIC Mode by efuse\n");
 		return 1;
 	}
 	else
 	{
-		if(!uartDisable){
-		NOTICE("ASIC Mode by register\n");
-		}
+		INFO("ASIC Mode by register\n");
 		return ((mmio_read_32(EN7523_SSTR_REG) & IS_ASIC) == IS_ASIC);
 	}
 }

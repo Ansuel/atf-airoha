@@ -65,11 +65,13 @@ static uint32_t next_image_type = NON_SECURE;
 volatile uint32_t unsupported_mpid_flag = 1;
 #endif
 
-#ifndef TCSUPPORT_UART_DISABLE
+/* precompiled .o will use uartDisable to toggle verbose output */
+#if LOG_LEVEL >= LOG_LEVEL_INFO
 uint32_t uartDisable = 0;
 #else
 uint32_t uartDisable = 1;
-#endif 
+#endif
+
 /*
  * Implement the ARM Standard Service function to get arguments for a
  * particular service.
@@ -141,10 +143,8 @@ void bl31_main(void)
 
 	/* Init per-world context registers for non-secure world */
 	manage_extensions_nonsecure_per_world();
-	if (!uartDisable) {
-		NOTICE("BL31: %s\n", version_string);
-		NOTICE("BL31: %s\n", build_message);
-	}
+	NOTICE("BL31: %s\n", version_string);
+	NOTICE("BL31: %s\n", build_message);
 
 #if FEATURE_DETECTION
 	/* Detect if features enabled during compilation are supported by PE. */
@@ -173,8 +173,7 @@ void bl31_main(void)
 #endif
 
 	/* Initialize the runtime services e.g. psci. */
-	if (!uartDisable)
-		INFO("BL31: Initializing runtime services\n");
+	INFO("BL31: Initializing runtime services\n");
 
 	runtime_svc_init();
 
@@ -195,9 +194,8 @@ void bl31_main(void)
 	 * If SPD had registered an init hook, invoke it.
 	 */
 	if (bl32_init != NULL) {
-		if(!uartDisable){
 		INFO("BL31: Initializing BL32\n");
-		}
+
 		console_flush();
 		int32_t rc = (*bl32_init)();
 
@@ -290,10 +288,9 @@ void __init bl31_prepare_next_image_entry(void)
 	next_image_info = bl31_plat_get_next_image_ep_info(image_type);
 	assert(next_image_info != NULL);
 	assert(image_type == GET_SECURITY_STATE(next_image_info->h.attr));
-	if(!uartDisable){
+
 	INFO("BL31: Preparing for EL3 exit to %s world\n",
-		(image_type == SECURE) ? "secure" : "normal");
-	}
+	     (image_type == SECURE) ? "secure" : "normal");
 	print_entry_point_info(next_image_info);
 	cm_init_my_context(next_image_info);
 

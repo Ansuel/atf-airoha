@@ -28,7 +28,6 @@ extern int console_ecnt_register(uintptr_t baseaddr, console_t *console);
 #if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 extern int efuse_check_eco(void);
 #endif
-extern uint32_t uartDisable;
 static entry_point_info_t bl32_ep_info;
 static entry_point_info_t bl33_ep_info;
 static console_t console;
@@ -144,9 +143,7 @@ entry_point_info_t *bl31_plat_get_next_image_ep_info(uint32_t type)
 	next_image_info = (type == NON_SECURE) ? &bl33_ep_info : &bl32_ep_info;
 
 	if (next_image_info->pc){
-		if(!uartDisable){
 		INFO(" next pc = 0x%x \n",next_image_info->pc );
-		}
 	}
 
 	/* None of the images on this platform can have 0x0 as the entrypoint */
@@ -320,9 +317,7 @@ void l2c_sram_config(int type)
     writeReg32(CSR_L2C_CFG_MP0, val);
 
     ca53_enable_icache();   /* dcache will be enabled later in plat_configure_mmu_el3 */
-	if(!uartDisable){
-    printf("L2C_type:%s\r\n", l2c_type_name[type]);
-	}
+    INFO("L2C_type:%s\r\n", l2c_type_name[type]);
     writeReg32(0x1fb00280, t_size[type]); /* use register to pass l2c_sram type to kernel */
 
     return;
@@ -380,7 +375,6 @@ void bl31_plat_arch_setup(void)
 {
 	uint64_t dram_size = 0;
     unsigned int numSet, associativity, LineSize, ccsidr, cacheSize;
-    int i;
 	
 #ifdef L2C_SRAM_CONFIG
     #ifdef L2C_SRAM_VERIFY
@@ -420,18 +414,19 @@ void bl31_plat_arch_setup(void)
                    BL_CODE_END,
                    BL_COHERENT_RAM_BASE,
                    BL_COHERENT_RAM_END);
+#if LOG_LEVEL >= LOG_LEVEL_INFO
+    int i;
 
     for (i=0; i<3; i++) {
-		if(!uartDisable){
         ccsidr = get_ccsidr(cssel_config[i]);
         numSet = ((ccsidr>>13)&0x3fff)+1;
         associativity = ((ccsidr>>3)&0x2ff)+1;
         LineSize = (1<<(((ccsidr)&0x7)+4));
         cacheSize = (numSet*associativity*LineSize);
-        printf("%s cache size: %d KB (with set/asso/line==%d/%d/%d)\n", 
-                cache_name[i], cacheSize>>10, numSet, associativity, LineSize);
-		}	
+        INFO("%s cache size: %d KB (with set/asso/line==%d/%d/%d)\n",
+             cache_name[i], cacheSize>>10, numSet, associativity, LineSize);
     }
+#endif
     return;
 }
 

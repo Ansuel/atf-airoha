@@ -39,7 +39,6 @@ static const io_dev_connector_t *memmap_dev_con;
 static uintptr_t memmap_dev_handle;
 static const io_dev_connector_t *enc_dev_con;
 static uintptr_t enc_dev_handle;
-extern uint32_t uartDisable;
 
 #if defined(IMAGE_BL31)
 io_block_spec_t fip_block_spec = {
@@ -376,8 +375,7 @@ int plat_get_image_source(unsigned int image_id, uintptr_t *dev_handle,
 	if (result == 0)
 	{
 		if ((image_id == BL2_IMAGE_ID) || (image_id == BL31_IMAGE_ID) || (image_id == BL33_IMAGE_ID)) {
-			if (!uartDisable)
-				NOTICE("FW UN-ENCRYPTION\n");
+			INFO("FW UN-ENCRYPTION\n");
 		}
 
 		*image_spec = policy->image_spec;
@@ -386,8 +384,7 @@ int plat_get_image_source(unsigned int image_id, uintptr_t *dev_handle,
 	else if (result == FW_ENCRYPTION)
 	{
 		if ((image_id == BL2_IMAGE_ID) || (image_id == BL31_IMAGE_ID) || (image_id == BL33_IMAGE_ID)) {
-			if (!uartDisable)
-				NOTICE("FW ENCRYPTION\n");
+			INFO("FW ENCRYPTION\n");
 		}
 
 		result = open_enc_fip(policy->image_spec);
@@ -413,15 +410,12 @@ int plat_check_bypass(void)
 		fip_dev_get_plat_toc_flag((io_dev_info_t *)fip_dev_handle , &plat_toc_flag);
 		result = plat_toc_flag & BYPASS_FWUPGRADE;
 		if (result == BYPASS_FWUPGRADE) {
-			if(!uartDisable)
-				NOTICE("3-3-4\n");
+			INFO("3-3-4\n");
 		} else {
-			if (!uartDisable)
-				NOTICE("3-3-3\n");
+			INFO("3-3-3\n");
 		}
 	} else {
-		if(!uartDisable)
-			NOTICE("3-3-2\n");
+		INFO("3-3-2\n");
 	}
 
 	return result;

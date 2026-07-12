@@ -393,15 +393,11 @@ void r2c_rd_bypass_wt_enable(int enable)
 
 	val = mmio_read_32(DRAMC_CONF1_REG);
 	if (enable) {
-		if(!uartDisable){
-		printf("enable r2c_rd_bypass_wt\r\n");
-		}
+		INFO("enable r2c_rd_bypass_wt\r\n");
 		val |= (0x1<<5);
 	}
 	else {
-		if(!uartDisable){
-		printf("disable r2c_rd_bypass_wt\r\n");
-		}
+		INFO("disable r2c_rd_bypass_wt\r\n");
 		val &= (~(0x1<<5));
 	}
 	mmio_write_32(DRAMC_CONF1_REG, val);
@@ -424,11 +420,11 @@ void bus_config(void)
 
 int ecnt_system_init(unsigned long long *p_dram_size)
 {
-	if(!uartDisable){
+#if LOG_LEVEL >= LOG_LEVEL_INFO
 	unsigned int hwtrap = mmio_read_32(0x1fb000b4);
 
-	printf("HWCONF is %x\n", hwtrap);
-	}
+	INFO("HWCONF is %x\n", hwtrap);
+#endif
 	check_fpga();
 
 	bus_config();
