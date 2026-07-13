@@ -159,11 +159,6 @@ void hw_trap_init(void)
 	hw_trap.hw_trap_decode	= (mmio_read_32(EN7523_HWTRAP_DEC) & HWTRAP_DEC_MASK);
 }
 
-void debug_init(void)
-{
-	tf_log_set_max_level(LOG_LEVEL_NOTICE);
-}
-
 void __dead2 plat_error_handler(int err)
 {
 	mmio_write_32(EN7523_SCREG_WF0, err);
@@ -200,8 +195,6 @@ void bl2_el3_early_platform_setup(u_register_t arg1, u_register_t arg2,
 	dsb();
 	VPint(BL2_OPTIMIZE_STATUS) = 0x12345678;
 #endif
-
-	debug_init();
 
 #ifndef IMAGE_BL21
 	efuse_init();
