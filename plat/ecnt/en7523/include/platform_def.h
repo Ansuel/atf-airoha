@@ -119,8 +119,13 @@
 
 
 
+#if defined(IMAGE_BL23)
+#define MAX_IO_HANDLES			4
+#define MAX_IO_DEVICES			4
+#else
 #define MAX_IO_HANDLES			3
 #define MAX_IO_DEVICES			3
+#endif
 
 #define BL1_RO_BASE		(0x0)
 #define BL1_RO_SIZE		(0x1C000)
