@@ -93,7 +93,7 @@ int lzmaBuffToBuffDecompress(uintptr_t *inStream, size_t length, uintptr_t *outS
 			 ((Byte *) *inStream) , LZMA_PROPS_SIZE, LZMA_FINISH_END, &state, &g_Alloc);
 	INFO("LZMA: Uncompresed ................ 0x%zx\n", outProcessed);
 
-	INFO("\033[33;1m 	decompressed data=> 0x%x-0x%x-0x%x-0x%x    \n\033[0m",*p,*(p+1), *(p+2), *(p+3));
+	VERBOSE("\033[33;1m 	decompressed data=> 0x%x-0x%x-0x%x-0x%x    \n\033[0m",*p,*(p+1), *(p+2), *(p+3));
 	if (res != SZ_OK) {
 		ERROR("LZMA: res %d state %d\n", res, state);
 	}
