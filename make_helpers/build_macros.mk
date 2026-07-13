@@ -571,64 +571,64 @@ $(ELF): $(OBJS) $(DEFAULT_LINKER_SCRIPT) $(LINKER_SCRIPTS) | $(1)_dirs libraries
 endif
 ifneq ($(TCSUPPORT_BB_FIX_UNOPEN),0)
 ifeq ($(IMAGE_BL22),1)
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/efuse* $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/Hal_io.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/DDR3_dram_init.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/DDR4_dram_init.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/IPM_actiming_setting_DDR3.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/IPM_actiming_setting_DDR4.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/RX_path_auto_gen.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/TX_path_auto_gen.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/TX_RX_auto_gen_library.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_actiming.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/MD32_initial.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_dv_dut.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_utility.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/DIG_NONSHUF_config.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/DIG_SHUF_config.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/DRAMC_SUBSYS_config.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/HW_FUNC_MANAGE.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/ANA_init_config.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_pi_basic_api.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_pi_calibration_api.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_dvfs.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_pi_main.o $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/efuse* $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/Hal_io.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/DDR3_dram_init.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/DDR4_dram_init.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/IPM_actiming_setting_DDR3.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/IPM_actiming_setting_DDR4.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/RX_path_auto_gen.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/TX_path_auto_gen.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/TX_RX_auto_gen_library.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_actiming.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/MD32_initial.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_dv_dut.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_utility.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/DIG_NONSHUF_config.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/DIG_SHUF_config.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/DRAMC_SUBSYS_config.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/HW_FUNC_MANAGE.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/ANA_init_config.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_pi_basic_api.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_pi_calibration_api.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_dvfs.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_pi_main.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc.o $(BUILD_DIR)/ ;
 
-	-cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramc_selfrefresh_api.o $(BUILD_DIR)/ ;
-	-cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/dramtest.o $(BUILD_DIR)/ ;
-	-cp -rf $(UNOPEN_IMG_PATH)/atf/bl22/ecnt_avs.o $(BUILD_DIR)/ ;
+	-cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramc_selfrefresh_api.o $(BUILD_DIR)/ ;
+	-cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/dramtest.o $(BUILD_DIR)/ ;
+	-cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl22/ecnt_avs.o $(BUILD_DIR)/ ;
 endif
 ifeq ($(IMAGE_BL23),1)
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl23/efuse* $(BUILD_DIR)/ ;
-	cp -rf $(UNOPEN_IMG_PATH)/atf/bl23/ecnt_npu_img.o $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl23/efuse* $(BUILD_DIR)/ ;
+	cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl23/ecnt_npu_img.o $(BUILD_DIR)/ ;
 endif
 	if [ "$$(basename $$(notdir $$@))" = "bl31" ] ; then \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/efuse* $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/Hal_io.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/DDR3_dram_init.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/DDR4_dram_init.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/IPM_actiming_setting_DDR3.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/IPM_actiming_setting_DDR4.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/RX_path_auto_gen.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/TX_path_auto_gen.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/TX_RX_auto_gen_library.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_actiming.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/MD32_initial.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_dv_dut.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_utility.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/DIG_NONSHUF_config.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/DIG_SHUF_config.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/DRAMC_SUBSYS_config.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/HW_FUNC_MANAGE.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/ANA_init_config.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_pi_basic_api.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_pi_calibration_api.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_dvfs.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_pi_main.o $(BUILD_DIR)/ ; \
-		cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc.o $(BUILD_DIR)/ ; \
-		if [ -f $(UNOPEN_IMG_PATH)/atf/bl31/dramc_selfrefresh_api.o ] ; then \
-			cp -rf $(UNOPEN_IMG_PATH)/atf/bl31/dramc_selfrefresh_api.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/efuse* $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/Hal_io.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/DDR3_dram_init.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/DDR4_dram_init.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/IPM_actiming_setting_DDR3.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/IPM_actiming_setting_DDR4.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/RX_path_auto_gen.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/TX_path_auto_gen.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/TX_RX_auto_gen_library.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_actiming.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/MD32_initial.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_dv_dut.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_utility.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/DIG_NONSHUF_config.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/DIG_SHUF_config.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/DRAMC_SUBSYS_config.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/HW_FUNC_MANAGE.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/ANA_init_config.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_pi_basic_api.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_pi_calibration_api.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_dvfs.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_pi_main.o $(BUILD_DIR)/ ; \
+		cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc.o $(BUILD_DIR)/ ; \
+		if [ -f $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_selfrefresh_api.o ] ; then \
+			cp -rf $(ECNT_PLAT)/$(SOC_SUB_DIR)/bl31/dramc_selfrefresh_api.o $(BUILD_DIR)/ ; \
 		fi \
 	fi
 endif
