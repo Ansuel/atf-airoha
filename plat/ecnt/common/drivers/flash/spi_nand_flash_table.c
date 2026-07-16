@@ -2231,6 +2231,9 @@ SPI_NAND_FLASH_RTN_T scan_spi_nand_table(struct SPI_NAND_FLASH_INFO_T *ptr_rtn_d
 }
 #else
 
+#include <stdio.h>
+#include <stdlib.h>
+
 int main(void){
 	int num=sizeof(spi_nand_flash_tables) / sizeof(spi_nand_flash_tables[0]);
 	int i;
@@ -2247,7 +2250,7 @@ int main(void){
 	}
 
 	if (!(buf = malloc(buf_size))) {
-		printf(stderr, "malloc failed\n");
+		printf("malloc failed\n");
 		fclose(fp);
 		return -1;
 	}
