@@ -503,7 +503,6 @@ endef
 #   $(4) = BL encryption flag (optional) (0, 1)
 define MAKE_BL
         $(eval BUILD_DIR  := ${BUILD_PLAT}/$(1))
-		$(eval UNOPEN_BL_DIR  := ${UNOPEN_IMG_PATH}/atf/bl$(1))
         $(eval BL_SOURCES := $($(call uppercase,$(1))_SOURCES))
         $(eval SOURCES    := $(sort $(BL_SOURCES) $(BL_COMMON_SOURCES) $(PLAT_BL_COMMON_SOURCES)))
         $(eval OBJS       := $(addprefix $(BUILD_DIR)/,$(call SOURCES_TO_OBJS,$(SOURCES))))
@@ -714,20 +713,10 @@ $(BIN): $(ELF)
 	$$(Q)$$(OC) -O binary $$< $$@
 	@${ECHO_BLANK_LINE}
 	@echo "Built $$@ successfully "
-	@echo "unopen at--> $(UNOPEN_IMG_PATH)"
-	@${ECHO_BLANK_LINE}
 
-	$(Q)if test ! -d $(UNOPEN_IMG_PATH)/atf/; \
-	then echo "aaa"; \
-	fi
-
-	$(Q)if test ! -d $(UNOPEN_IMG_PATH)/atf/; \
-	then mkdir -p $(UNOPEN_IMG_PATH)/atf/; \
-	fi
 ifeq ($(IMAGE_BL22),1)
 	$$(Q)if [ "$$(basename $$(notdir $$@))" = "bl2" ] ; then \
 	$(TOOLS_DIR)/lzma e $$@ bl22.lzma ; \
-	cp bl22.lzma $(UNOPEN_IMG_PATH)/atf/ ; \
 	fi	
 endif
 
@@ -735,7 +724,6 @@ ifeq ($(IMAGE_BL23),1)
 
 	$$(Q)if [ "$$(basename $$(notdir $$@))" = "bl2" ] ; then \
 	$(TOOLS_DIR)/lzma e $$@ bl23.lzma ; \
-	cp bl23.lzma $(UNOPEN_IMG_PATH)/atf/ ; \
 	fi	
 endif
 
@@ -743,34 +731,8 @@ ifeq ($(IMAGE_BL21),1)
 	$$(Q)if [ "$$(basename $$(notdir $$@))" = "bl2" ] ; then \
 	cp $$@ bl21.bin ; \
 	dd if=/dev/null of=bl21.bin bs=1 count=0 seek=14336 ; \
-	cp bl21.bin $(UNOPEN_IMG_PATH)/atf/ ; \
 	fi
 endif
-
-
-	$$(Q)cp $$@ $(UNOPEN_IMG_PATH)/atf/
-
-ifeq ($(IMAGE_BL23),1)
-	if test ! -d $(UNOPEN_IMG_PATH)/atf/bl23; then \
-		mkdir -pv $(UNOPEN_IMG_PATH)/atf/bl23; \
-	fi
-	cp $(LINKERFILE) $(LIB_DIR)/*.a $(UNOPEN_OBJS) $(UNOPEN_IMG_PATH)/atf/bl23/ ;
-endif
-
-ifeq ($(IMAGE_BL22),1)
-	if test ! -d $(UNOPEN_IMG_PATH)/atf/bl22; then \
-		mkdir -pv $(UNOPEN_IMG_PATH)/atf/bl22; \
-	fi
-	cp $(LINKERFILE) $(LIB_DIR)/*.a $(UNOPEN_OBJS) $(UNOPEN_IMG_PATH)/atf/bl22/ ;
-endif
-
-	if [ "$$(basename $$(notdir $$@))" = "bl31" ] ; then \
-		if test ! -d $(UNOPEN_IMG_PATH)/atf/bl31; then \
-			mkdir -pv $(UNOPEN_IMG_PATH)/atf/bl31; \
-		fi ;\
-		cp $(LINKERFILE) $(LIB_DIR)/*.a $(UNOPEN_OBJS) $(UNOPEN_IMG_PATH)/atf/bl31/ ; \
-	fi
-
 
 .PHONY: $(1)
 ifeq ($(DISABLE_BIN_GENERATION),1)
