@@ -491,32 +491,31 @@ const struct SPI_NAND_FLASH_INFO_T spi_nand_flash_tables[] = {
 		extend_dev_id:				_SPI_NAND_DEVICE_ID_W25N01GV_EXTEND,
 	},
 
-#if 0	
 	{
 		mfr_id:						_SPI_NAND_MANUFACTURER_ID_WINBOND,
 		dev_id:						_SPI_NAND_DEVICE_ID_W25N01KV,
 		ptr_name:					(const u8 *) " _SPI_NAND_DEVICE_ID_W25N01KV",
 		device_size:				_SPI_NAND_CHIP_SIZE_1GBIT,
 		page_size:					_SPI_NAND_PAGE_SIZE_2KBYTE,
-		oob_size:					_SPI_NAND_OOB_SIZE_64BYTE,
+		oob_size:					_SPI_NAND_OOB_SIZE_96BYTE,
 		erase_size:					_SPI_NAND_BLOCK_SIZE_128KBYTE,
 		dummy_mode:					SPI_NAND_FLASH_READ_DUMMY_BYTE_APPEND,
 		read_mode:					SPI_NAND_FLASH_READ_SPEED_MODE_DUAL,
 		write_mode:					SPI_NAND_FLASH_WRITE_SPEED_MODE_SINGLE,
-		oob_free_layout : 			&ooblayout_type7,
-		feature:					SPI_NAND_FLASH_FEATURE_NONE,
+		oob_free_layout : 			&ooblayout_type21,
+		feature:					SPI_NAND_FLASH_READ_ECC_ERROR_BIT_CHECK,
 		die_num:					1,
 		ecc_fail_check_info:		{0x30, 0x20},
 		write_en_type:				SPI_NAND_FLASH_WRITE_EN_FIRST,
-		unlock_block_info:			{0xFB, 0x0},
+		unlock_block_info:			{0x78, 0x0},
 		quad_en:					{0x0, 0x0},
 		ecc_en:						{_SPI_NAND_ADDR_FEATURE, 0x10, 0x10},
 #ifdef TCSUPPORT_NAND_FLASH_OTP
 		otp_page_num:				12,
 #endif
 		extend_dev_id:				_SPI_NAND_DEVICE_ID_W25N01KV_EXTEND,
+		read_ecc_ceck:				{_SPI_NAND_CHECK_ECC_THROSHOLD_BY_FLASH, {0x30, 0x0, 0x0}, {_SPI_NAND_ADDR_EXTEND_BFD, 0x30, 0x0}},
 	},
-#endif
 
 	{
 		mfr_id: 					_SPI_NAND_MANUFACTURER_ID_WINBOND,
