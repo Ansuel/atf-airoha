@@ -409,6 +409,14 @@ ifeq ($(IMAGE_BL23),1)
 				${ECNT_PLAT}/common/ecnt_bl2_mem_params_desc.c		\
 				${ECNT_PLAT}/common/drivers/xmodem/xmodem.c			\
 				${LZMA_SOURCES}
+
+ifeq ($(TCSUPPORT_GPT_ATF_SUPPORT),1)
+	BL2_SOURCES +=		drivers/io/io_block.c							\
+				drivers/partition/partition.c						\
+				drivers/partition/gpt.c							\
+				common/tf_crc32.c
+endif
+
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_EN7581)$(TCSUPPORT_CPU_AN7552)),)
 ifneq ($(TCSUPPORT_BB_FIX_UNOPEN),0)
 ifeq ($(TCSUPPORT_ATF_RELEASE),)

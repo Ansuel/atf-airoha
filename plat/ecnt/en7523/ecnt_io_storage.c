@@ -6,6 +6,8 @@
 
 #include <assert.h>
 #include <string.h>
+#include <inttypes.h>
+#include <stdio.h>
 
 #include <plat_private.h>
 #include <platform_def.h>
@@ -16,6 +18,9 @@
 #include <drivers/io/io_fip.h>
 #include <drivers/io/io_memmap.h>
 #include <drivers/io/io_encrypted.h>
+#include <drivers/io/io_block.h>
+#include <drivers/partition/partition.h>
+#include <drivers/mmc.h>
 #include <tools_share/firmware_image_package.h>
 
 #if TRUSTED_BOARD_BOOT
@@ -39,6 +44,9 @@ static const io_dev_connector_t *memmap_dev_con;
 static uintptr_t memmap_dev_handle;
 static const io_dev_connector_t *enc_dev_con;
 static uintptr_t enc_dev_handle;
+#if defined(TCSUPPORT_GPT_ATF_SUPPORT)
+static uintptr_t mmc_dev_uda_handle;
+#endif
 
 #if defined(IMAGE_BL31)
 io_block_spec_t fip_block_spec = {
@@ -56,6 +64,27 @@ static const io_block_spec_t fip_block_spec = {
 	.offset = PLAT_ECNT_FIP_BASE,
 	.length = PLAT_ECNT_FIP_MAX_SIZE
 };
+#endif
+
+#if defined(TCSUPPORT_GPT_ATF_SUPPORT)
+static size_t mmc_uda_read_blocks(int lba, uintptr_t buf, size_t size);
+
+static io_block_dev_spec_t mmc_dev_uda_spec = {
+	.buffer = {
+		.offset = IO_BLOCK_BUF_OFFSET, //81800000 defined in platform_def.h
+		.length = IO_BLOCK_BUF_SIZE, //100000 cuz primary gpt is continuous
+	},
+
+	.ops = {
+		.read = mmc_uda_read_blocks,
+	},
+
+	.block_size = MMC_BLOCK_SIZE, //512 defined in include/drivers/mmc.h
+};
+
+/* will be updated by drivers/partition/partition.c */
+static io_block_spec_t mmc_dev_gpt_spec;
+static io_block_spec_t mmc_dev_bkup_gpt_spec;
 #endif
 
 static const io_uuid_spec_t bl2_uuid_spec = {
@@ -114,6 +143,13 @@ static int check_ubi(const uintptr_t spec);
 static int open_fip(const uintptr_t spec);
 static int open_memmap(const uintptr_t spec);
 static int open_enc_fip(const uintptr_t spec);
+
+#ifdef TCSUPPORT_GPT_ATF_SUPPORT
+static int check_gpt_handle(const uintptr_t spec)
+{
+	return io_dev_init(mmc_dev_uda_handle, (uintptr_t)NULL);
+}
+#endif
 
 struct plat_io_policy {
 	uintptr_t *dev_handle;
@@ -223,6 +259,20 @@ static const struct plat_io_policy tos_fw_cert_policy = {
 #endif /* !IMAGE_BL1 */
 #endif /* TRUSTED_BOARD_BOOT */
 
+#ifdef TCSUPPORT_GPT_ATF_SUPPORT
+static const struct plat_io_policy gpt_policy = {
+	.dev_handle = &mmc_dev_uda_handle,
+	.image_spec = (uintptr_t)NULL,
+	.check = check_gpt_handle,
+};
+
+static const struct plat_io_policy bkup_gpt_policy = {
+	.dev_handle = &mmc_dev_uda_handle,
+	.image_spec = (uintptr_t)NULL,
+	.check = check_gpt_handle,
+};
+#endif
+
 /* By default, load images from the FIP */
 static const struct plat_io_policy *policies[] = {
 	/* [FIP_IMAGE_ID] set in plat_ecnt_io_setup */
@@ -250,6 +300,10 @@ static const struct plat_io_policy *policies[] = {
 	[TRUSTED_OS_FW_CONTENT_CERT_ID] = &tos_fw_cert_policy,
 #endif
 #endif
+#endif
+#ifdef TCSUPPORT_GPT_ATF_SUPPORT
+	[GPT_IMAGE_ID] = &gpt_policy,
+	[BKUP_GPT_IMAGE_ID] = &bkup_gpt_policy,
 #endif
 };
 
@@ -315,6 +369,66 @@ static int open_memmap(const uintptr_t spec)
 	return result;
 }
 
+#if defined(TCSUPPORT_GPT_ATF_SUPPORT)
+static size_t mmc_uda_read_blocks(int lba, uintptr_t buf, size_t size)
+{
+	return mmc_read_blocks(lba, buf, size);
+}
+
+static int airoha_mmc_gpt_init(void)
+{
+	static bool gpt_init_done = false;
+	int ret;
+
+	if (!gpt_init_done) {
+		ret = gpt_partition_init();
+		if (ret != 0)
+			return -ENOENT;
+
+		gpt_init_done = true;
+	}
+
+	return 0;
+}
+
+static int airoha_mmc_gpt_image_setup(uintptr_t *dev_handle,
+				      uintptr_t *image_spec,
+				      uintptr_t *bkup_image_spec)
+{
+	const io_dev_connector_t *dev_con;
+	int ret;
+
+	ret = register_io_dev_block(&dev_con);
+	if (ret)
+		return ret;
+
+	ret = io_dev_open(dev_con, (uintptr_t)&mmc_dev_uda_spec, dev_handle);
+	if (ret)
+		return ret;
+
+	*image_spec = (uintptr_t)&mmc_dev_gpt_spec;
+	*bkup_image_spec = (uintptr_t)&mmc_dev_bkup_gpt_spec;
+
+	return 0;
+}
+
+int fill_io_block_spec_gpt(io_block_spec_t *spec, const char *name)
+{
+	const partition_entry_t *entry;
+
+	entry = get_partition_entry(name);
+	if (!entry)
+		panic();
+
+	INFO("Found partition '%s' at 0x%zx, size 0x%zx\n",
+	     name, (size_t)entry->start, (size_t)entry->length);
+	spec->offset = entry->start;
+	spec->length = entry->length;
+
+	return 0;
+}
+#endif
+
 #if defined(IMAGE_BL23)
 void plat_ecnt_io_switch_to_memmap(void)
 {
@@ -340,6 +454,19 @@ void plat_ecnt_io_setup(const hw_trap_t *hw_trap)
 		io_result = mtk_fip_image_setup(&ubi_dev_handle,
 						&policies[FIP_IMAGE_ID]->image_spec);
 		assert(io_result == 0);
+	}
+#endif
+
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_GPT_ATF_SUPPORT)
+	if(hw_trap->is_emmc &&
+	   (!hw_trap->fw_upgrade_mode || hw_trap->skip_fw_upgrade || plat_get_hw_bypass())) {
+		int ret = airoha_mmc_gpt_image_setup(&mmc_dev_uda_handle,
+						     &policies[GPT_IMAGE_ID]->image_spec,
+						     &policies[BKUP_GPT_IMAGE_ID]->image_spec);
+		if (ret)
+			panic();
+
+		airoha_mmc_gpt_init();
 	}
 #endif
 

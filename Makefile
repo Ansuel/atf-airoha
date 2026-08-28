@@ -407,8 +407,13 @@ $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
 $(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
 endif
 
+ifneq ($(strip $(TCSUPPORT_GPT_ATF_SUPPORT)),)
+$(eval $(call add_define,TCSUPPORT_GPT_ATF_SUPPORT))
+$(eval $(call add_define,TCSUPPORT_EMMC))
+else
 ifneq ($(strip $(TCSUPPORT_EMMC)),)
 $(eval $(call add_define,TCSUPPORT_EMMC))
+endif
 endif
 
 ifneq ($(strip $(OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET)),)

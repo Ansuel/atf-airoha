@@ -29,11 +29,22 @@
 #include <xmodem.h>
 #include <ecnt_scu.h>
 
+#if defined(TCSUPPORT_EMMC)
+#include <drivers/io/io_storage.h>
+#endif
+
 /* Data structure which holds the extents of the trusted SRAM for BL1*/
 static meminfo_t bl2_el3_tzram_layout;
 static console_t console;
 static hw_trap_t hw_trap;
 static int debug_flag = 0;
+
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_EMMC)
+static io_block_spec_t mmc_dev_bl31_fip_spec = {
+	PLAT_ECNT_BL31_FIP_OFFSET,
+	PLAT_ECNT_FIP_MAX_SIZE
+};
+#endif
 
 unsigned int bl31_base_addr = BL31_BASE;
 unsigned int rst_vector_base_addr = RVBADDRESS_CPU0;
@@ -476,7 +487,12 @@ void bl2_plat_preload_setup(void)
 	/* Read BL31+U-Boot from offset for eMMC. For NAND FIP is read by UBI module */
 	if (hw_trap.is_emmc &&
 	    (!hw_trap.fw_upgrade_mode || hw_trap.skip_fw_upgrade || plat_get_hw_bypass())) {
-		if (flash_read(PLAT_ECNT_BL31_FIP_OFFSET, PLAT_ECNT_FIP_MAX_SIZE, (uint8_t *) PLAT_ECNT_FIP_BASE) != FLASH_READ_STATUS_CORRECT)
+#if defined(TCSUPPORT_GPT_ATF_SUPPORT)
+		fill_io_block_spec_gpt(&mmc_dev_bl31_fip_spec, "fip");
+#endif
+		if (flash_read(mmc_dev_bl31_fip_spec.offset,
+			       mmc_dev_bl31_fip_spec.length,
+			       (uint8_t *) PLAT_ECNT_FIP_BASE) != FLASH_READ_STATUS_CORRECT)
 			panic();
 	}
 #endif
