@@ -402,6 +402,14 @@ ifneq ($(strip $(TCSUPPORT_EMMC)),)
 $(eval $(call add_define,TCSUPPORT_EMMC))
 endif
 
+ifneq ($(strip $(TCSUPPORT_UBI_SUPPORT)),)
+$(eval $(call add_define,TCSUPPORT_UBI_SUPPORT))
+endif
+
+ifneq ($(strip $(OVERRIDE_UBI_START_ADDR)),)
+$(eval $(call add_define_val,OVERRIDE_UBI_START_ADDR,$(OVERRIDE_UBI_START_ADDR)))
+endif
+
 ifneq ($(strip $(TCSUPPORT_TPL_SUPPORT)),)
 $(eval $(call add_define,TCSUPPORT_TPL_SUPPORT))
 endif

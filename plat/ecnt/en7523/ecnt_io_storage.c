@@ -30,7 +30,7 @@
 #endif /* TRUSTED_BOARD_BOOT */
 
 /* IO devices */
-#if defined(IMAGE_BL23)
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 static uintptr_t ubi_dev_handle;
 #endif
 static const io_dev_connector_t *fip_dev_con;
@@ -108,7 +108,7 @@ static const io_uuid_spec_t tos_fw_cert_uuid_spec = {
 #endif
 #endif /* TRUSTED_BOARD_BOOT */
 
-#if defined(IMAGE_BL23)
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 static int check_ubi(const uintptr_t spec);
 #endif
 static int open_fip(const uintptr_t spec);
@@ -127,7 +127,7 @@ static const struct plat_io_policy fip_memmap_policy = {
 	.check = open_memmap,
 };
 
-#if defined(IMAGE_BL23)
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 static const struct plat_io_policy fip_ubi_policy = {
 	.dev_handle = &ubi_dev_handle,
 	.image_spec = (uintptr_t)NULL,
@@ -253,7 +253,7 @@ static const struct plat_io_policy *policies[] = {
 #endif
 };
 
-#if defined(IMAGE_BL23)
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 static int check_ubi(const uintptr_t spec)
 {
 	int result;
@@ -321,7 +321,7 @@ void plat_ecnt_io_setup(const hw_trap_t *hw_trap)
 
 	policies[FIP_IMAGE_ID] = &fip_memmap_policy;
 
-#if defined(IMAGE_BL23)
+#if defined(IMAGE_BL23) && defined(TCSUPPORT_UBI_SUPPORT)
 	/* Expect UBI if we are on NAND AND we are not in recovery procedure */
 	if (!hw_trap->is_emmc &&
 	    (!hw_trap->fw_upgrade_mode || hw_trap->skip_fw_upgrade || plat_get_hw_bypass())) {
