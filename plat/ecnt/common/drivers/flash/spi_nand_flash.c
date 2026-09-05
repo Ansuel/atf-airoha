@@ -2422,6 +2422,179 @@ int nandflash_read(unsigned long from, unsigned long len, u32 *retlen, unsigned 
 		return -1;
 	}	
 }
+
+/*------------------------------------------------------------------------------------
+ * FUNCTION: static int spi_nand_cache_read( u32  page,
+ *											 u32  offset,
+ *											 u32  len,
+ *											 u8  *buf )
+ * PURPOSE : Stream a byte range straight out of the SPI-NAND chip cache.
+ *
+ *           @offset is a *cache* offset: the page data occupies
+ *           [0, page_size) and the spare area [page_size, page_size + oob_size).
+ *
+ *           Unlike spi_nand_read_page() this only moves the bytes the caller
+ *           actually asked for instead of always transferring a whole page
+ *           plus spare area.  That is what makes scanning cheap, the UBI scan
+ *           only needs a handful of bytes (a 1 byte bad block marker and a
+ *           64 byte VID/EC header) per physical erase block.
+ *
+ * CALLS
+ *   - spi_nand_load_page_into_cache()
+ *   - spi_nand_protocol_read_from_cache()
+ *
+ * PARAMs  :
+ *   INPUT : page   - page whose cache is to be read
+ *           offset - offset inside the page cache
+ *           len    - number of bytes to transfer
+ *   OUTPUT: buf    - destination buffer
+ * RETURN  : 0 - Successful.   Otherwise -1.
+ * NOTES   :
+ *   This path never fills _current_cache_page_data, so the page marker is
+ *   dropped.  Otherwise a later spi_nand_read_page() could mistake the
+ *   content of the flash cache for a cached page and return stale data.
+ *
+ *------------------------------------------------------------------------------------
+ */
+static int spi_nand_cache_read(u32 page, u32 offset, u32 len, u8 *buf)
+{
+	struct SPI_NAND_FLASH_INFO_T *ptr_dev_info_t;
+
+	ptr_dev_info_t = _SPI_NAND_GET_DEVICE_INFO_PTR;
+
+	_current_page_num = UNKNOW_PAGE;
+
+	_SPI_NAND_ENABLE_MANUAL_MODE();
+
+	if (spi_nand_load_page_into_cache(page) != SPI_NAND_FLASH_RTN_NO_ERROR) {
+		_SPI_NAND_PRINTF("spi_nand_cache_read: unreadable page 0x%x\n",
+				 page);
+		return -1;
+	}
+
+	/* Mirror spi_nand_read_page(): the cache address carries the plane bit */
+	if (ptr_dev_info_t->feature & SPI_NAND_FLASH_PLANE_SELECT_HAVE)
+		_plane_select_bit = (page >> 6) & 0x1;
+
+	if (spi_nand_protocol_read_from_cache(offset, len, buf,
+			ptr_dev_info_t->read_mode,
+			ptr_dev_info_t->dummy_mode) != SPI_NAND_FLASH_RTN_NO_ERROR) {
+		return -1;
+	}
+
+	return 0;
+}
+
+/*------------------------------------------------------------------------------------
+ * FUNCTION: int nandflash_read_range( unsigned long  from,
+ *									   unsigned long  len,
+ *									   unsigned char *buf )
+ * PURPOSE : Byte for byte compatible fast replacement for nandflash_read().
+ *
+ *           Uses the same data only addressing as nandflash_read() but only
+ *           transfers the requested bytes.
+ *
+ *           nandflash_read() pulls a complete page plus its spare area out of
+ *           the chip for every single access.  BL2 runs the SPI controller in
+ *           PIO mode (no DMA, see SPI_NAND_Flash_Init()), so that is ~2KB of
+ *           polled transfers even when 64 bytes are needed.  During the UBI
+ *           scan that happens 2..3 times per physical erase block over the
+ *           whole device, which is what made locating the FIP volume take
+ *           several seconds.
+ *
+ * PARAMs  :
+ *   INPUT : from - flash address (data area)
+ *           len  - number of bytes
+ *   OUTPUT: buf  - destination buffer
+ * RETURN  : 0 - Successful.   Otherwise -1.
+ * NOTES   :
+ *   -1 is also returned when the fast path would be slower or unsafe and the
+ *   caller must fall back to nandflash_read():
+ *     - the SoC ECC engine corrects the data while it is streamed out of the
+ *       chip cache, so a partial transfer would bypass the correction;
+ *     - with the controller DMA active, a request covering at least one whole
+ *       page is faster through the full page DMA path.
+ *
+ *------------------------------------------------------------------------------------
+ */
+int nandflash_read_range(unsigned long from, unsigned long len,
+			 unsigned char *buf)
+{
+	struct SPI_NAND_FLASH_INFO_T *ptr_dev_info_t;
+	unsigned long addr, remain;
+	u32 page_size, chunk;
+
+	if (!len)
+		return 0;
+
+	if (isSpiNandAndCtrlECC)
+		return -1;
+
+	ptr_dev_info_t = _SPI_NAND_GET_DEVICE_INFO_PTR;
+	page_size = ptr_dev_info_t->page_size;
+
+	if (_spi_dma_mode == SPI_DMA_MODE_ENABLE && len >= page_size)
+		return -1;
+
+	for (addr = from, remain = len; remain > 0; ) {
+		chunk = page_size - (addr % page_size);
+		if (chunk > remain)
+			chunk = remain;
+
+		if (spi_nand_cache_read(addr / page_size, addr % page_size,
+					chunk, &buf[len - remain]))
+			return -1;
+
+		addr += chunk;
+		remain -= chunk;
+	}
+
+	return 0;
+}
+
+/*------------------------------------------------------------------------------------
+ * FUNCTION: int nandflash_read_oob( unsigned long  from,
+ *									 unsigned long  len,
+ *									 unsigned char *buf )
+ * PURPOSE : Read @len bytes from the spare area of the page containing @from.
+ *
+ *           @from uses the same data only addressing as nandflash_read().
+ *           Reading starts at the first spare byte, so this is how a bad
+ *           block marker is fetched without transferring a whole page.
+ *
+ * PARAMs  :
+ *   INPUT : from - flash address identifying the page
+ *           len  - number of spare bytes to read, must not exceed oob_size
+ *   OUTPUT: buf  - destination buffer
+ * RETURN  : 0 - Successful.   Otherwise -1.
+ * NOTES   :
+ *   Same SoC ECC restriction as nandflash_read_range().
+ *   The request is never silently truncated: if @len is larger than the
+ *   spare area, -1 is returned instead of reading a partial buffer.
+ *
+ *------------------------------------------------------------------------------------
+ */
+int nandflash_read_oob(unsigned long from, unsigned long len,
+		       unsigned char *buf)
+{
+	struct SPI_NAND_FLASH_INFO_T *ptr_dev_info_t;
+	u32 page_size, oob_size;
+
+	if (!len)
+		return 0;
+
+	if (isSpiNandAndCtrlECC)
+		return -1;
+
+	ptr_dev_info_t = _SPI_NAND_GET_DEVICE_INFO_PTR;
+	page_size = ptr_dev_info_t->page_size;
+	oob_size = ptr_dev_info_t->oob_size;
+
+	if (len > oob_size)
+		return -1;
+
+	return spi_nand_cache_read(from / page_size, page_size, len, buf);
+}
 #endif
 
 

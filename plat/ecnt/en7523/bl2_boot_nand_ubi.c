@@ -32,6 +32,8 @@
 #define BAD_BLOCK_RAW (0)
 extern int nandflash_init(int rom_base);
 extern int nandflash_read(unsigned long from, unsigned long len, u32 *retlen, unsigned char *buf, SPI_NAND_FLASH_RTN_T *status);
+extern int nandflash_read_range(unsigned long from, unsigned long len, unsigned char *buf);
+extern int nandflash_read_oob(unsigned long from, unsigned long len, unsigned char *buf);
 extern int nandflash_write(unsigned long to, unsigned long len, u32 *retlen, unsigned char *buf);
 extern int nandflash_erase(unsigned long offset, unsigned long len);
 extern int en7512_nand_check_block_bad(u32 offset, u32 bmt_block);
@@ -41,13 +43,28 @@ uint32_t nand_size;
 
 static int nand_ubispl_is_bad_block(uint32_t pnum)
 {
+	unsigned char bbm;
 	int ret;
 
-	ret = en7512_nand_check_block_bad(pnum * block_size, BAD_BLOCK_RAW);
-	if (ret)
-		return -EIO;
+	/*
+	 * The bad block marker is the first byte of the spare area of the
+	 * block's first page.  Fetch that single byte instead of going through
+	 * en7512_nand_check_block_bad(), which loads and transfers a whole
+	 * page plus spare area for every query.  The UBI scan issues one query
+	 * per physical erase block, so this is the single hottest spot of the
+	 * FIP lookup.
+	 */
+	ret = nandflash_read_oob((unsigned long)pnum * block_size, 1, &bbm);
+	if (ret) {
+		/*
+		 * Fast path unavailable (SoC ECC) or unreadable page, fall
+		 * back to the full page check.
+		 */
+		return en7512_nand_check_block_bad(pnum * block_size,
+						   BAD_BLOCK_RAW) ? -EIO : 0;
+	}
 
-	return 0;
+	return (bbm != 0xff) ? -EIO : 0;
 }
 
 static int nand_ubispl_read(uint32_t pnum, unsigned long offset,
@@ -59,6 +76,15 @@ static int nand_ubispl_read(uint32_t pnum, unsigned long offset,
 	int ret;
 
 	addr = (uint32_t)pnum * block_size + offset;
+
+	/*
+	 * Stream only the bytes that were asked for.  nandflash_read() always
+	 * transfers a complete page plus spare area, which costs ~2KB of PIO
+	 * transfers for a 64 byte VID header.  Fall back to it when the fast
+	 * path is not usable (SoC ECC engine) or the page is unreadable.
+	 */
+	if (!nandflash_read_range(addr, len, dst))
+		return 0;
 
 	ret = nandflash_read(addr, len, &len_read, dst, &status);
 	if (ret) {

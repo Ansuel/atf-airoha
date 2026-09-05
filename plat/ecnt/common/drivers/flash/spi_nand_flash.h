@@ -109,6 +109,8 @@ struct SPI_NAND_FLASH_INFO_T {
 /* EXPORTED SUBPROGRAM SPECIFICATION ------------------------------------------------- */
 int nandflash_init(int rom_base);
 int nandflash_read(unsigned long from, unsigned long len, uint32_t *retlen, unsigned char *buf, SPI_NAND_FLASH_RTN_T *status);
+int nandflash_read_range(unsigned long from, unsigned long len, unsigned char *buf);
+int nandflash_read_oob(unsigned long from, unsigned long len, unsigned char *buf);
 
 #endif /* ifndef __SPI_NAND_FLASH_H__ */
 /* End of [spi_nand_flash.h] package */
