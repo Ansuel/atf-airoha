@@ -454,12 +454,12 @@ u8 *dma_write_page = NULL;
 #endif
 
 #if defined(BOOTROM_EXT) || defined(IMAGE_BL2)
-u8 	*tmp_dma_read_page = (u8 *)0x80000000; //9KB
-u8 	*tmp_dma_write_page = (u8 *)0x80000000; //9KB
-u8	_current_cache_page[_SPI_NAND_CACHE_SIZE];
-u8	_current_cache_page_data[_SPI_NAND_PAGE_SIZE];
-u8	_current_cache_page_oob[_SPI_NAND_OOB_SIZE];
-u8	_current_cache_page_oob_mapping[_SPI_NAND_OOB_SIZE];
+u8 *tmp_dma_read_page = (u8 *)0x80500000; //9KB
+u8 *tmp_dma_write_page = (u8 *)0x80502400; //9KB
+u8 *_current_cache_page = (u8 *)0x80504800; //9KB
+u8 *_current_cache_page_data = (u8 *)0x80506C00; //8KB
+u8 *_current_cache_page_oob = (u8 *)0x80508C00; //1KB
+u8 *_current_cache_page_oob_mapping = (u8 *)0x80509000; //1KB
 #else
 u8 	tmp_dma_read_page[_SPI_NAND_CACHE_SIZE + CACHE_LINE_SIZE];
 #if	!defined(LZMA_IMG) || defined(TCSUPPORT_BB_256KB)
