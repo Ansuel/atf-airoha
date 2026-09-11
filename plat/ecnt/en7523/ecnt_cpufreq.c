@@ -509,6 +509,13 @@ int an7552_bootup_clk_src_switch(enum e_cpu_freq cpuFreq)
 int en7523_armpll_set(enum e_cpu_freq cpuFreq)
 {
     unsigned int val;
+
+    /* Kernel OPPs can be newer than the frequency table in this BL31. */
+    if (cpuFreq >= cpu_freq_last) {
+        printf("ERROR: cpu freq index %d out of range, highest is %d\n",
+               cpuFreq, cpu_freq_last - 1);
+        return -1;
+    }
 #if 0	//YMC mark for new AVS FW
     AVS_STATUS_T ret;
 
