@@ -72,7 +72,48 @@ typedef union {
 #if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
 extern void en7523_packageID_init(void);
 #else
-void en7523_packageID_init(void) {}
+/*
+ * EN7523 family (EN7523 / EN7562 / EN7529) package ID.
+ *
+ * Unlike the other SoCs, the package ID is not exposed by a dedicated SCU
+ * register: it is programmed into the eFuse and has to be read back and saved
+ * into the NP-SCU scratch register SCREG_WR1. That register is the only place
+ * later stages read the package ID from (U-Boot get_pkgid(), Linux
+ * airoha-cpufreq), so it must be filled in here.
+ *
+ * The first two eFuse bytes hold (little endian):
+ *   bit  3      : remark mode selector   [ef_read_parse(3, 1, ...)]
+ *   bits [8:4]  : package ID, normal mode
+ *   bits [13:9] : package ID, remark mode
+ *
+ * Leaving SCREG_WR1 untouched means every later stage reads the reset value
+ * 0 == EN7529DU: U-Boot and Linux mis-detect the SoC and Linux then selects
+ * the wrong maximum CPU frequency for the part (e.g. 1.2 GHz on a 1.0 GHz
+ * package), which makes the system unstable.
+ */
+void en7523_packageID_init(void)
+{
+	unsigned int val;
+	unsigned int pkgid;
+
+	val = ((unsigned int)ef_read_byte(1) << 8) |
+	       (unsigned int)ef_read_byte(0);
+
+	if (val & (1U << 3)) {
+		/* remark mode */
+		pkgid = (val >> 9) & 0x1f;
+	} else {
+		pkgid = (val >> 4) & 0x1f;
+	}
+
+	if (pkgid > (unsigned int)(EN7523DTM - EN7523_BASE)) {
+		NOTICE("eFuse package ID 0x%x (raw 0x%04x) is invalid, "
+		       "keeping the saved one\n", pkgid, val);
+		return;
+	}
+
+	SET_PACKAGE_ID(pkgid);
+}
 #endif
 extern uint32_t uartDisable;
 /* function mainly for FPGA use
