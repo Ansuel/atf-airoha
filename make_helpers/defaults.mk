@@ -375,4 +375,8 @@ ENABLE_CONSOLE_GETC		:= 1
 # Most platforms switch from EL3 to NS-EL2 and hence the unused NS-EL2
 # functions must be enabled by platforms if they require it.
 # Disabled by default.
+ifneq ($(TCSUPPORT_CPU_EN7581)$(TCSUPPORT_CPU_AN7583),)
 INIT_UNUSED_NS_EL2		:= 0
+else
+INIT_UNUSED_NS_EL2		:= 1
+endif
