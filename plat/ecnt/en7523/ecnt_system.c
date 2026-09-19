@@ -358,10 +358,12 @@ void ecnt_cpu_speedup(void)
    	     en7523_armpll_set(cpu_freq_1200M);
 	}
 #endif
+#if defined(TCSUPPORT_CPU_AN7552)
 	else if(isAN7552)
 	{
 		an7552_bootup_clk_src_switch(cpu_freq_1000M);
 	}
+#endif
 #if defined(TCSUPPORT_CPU_AN7583)
 	else if(isAN7583)
 	{
