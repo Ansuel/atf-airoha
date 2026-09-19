@@ -105,7 +105,11 @@
 	 * All fields are architecturally UNKNOWN on reset.
 	 * ---------------------------------------------------------------------
 	 */
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
 	mov_imm x0, CPTR_EL3_RESET_VAL
+#else
+	mov_imm x0, (CPTR_EL3_RESET_VAL & ~(TCPAC_BIT | TAM_BIT | TTA_BIT | TFP_BIT))
+#endif
 	msr	cptr_el3, x0
 
 	/*
