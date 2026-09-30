@@ -1687,7 +1687,32 @@ const struct SPI_NAND_FLASH_INFO_T spi_nand_flash_tables[] = {
 #endif
 		extend_dev_id:				_SPI_NAND_DUMMY_EXTEND_DEVICE_ID,
 	},
-	
+
+	{
+		mfr_id: 					_SPI_NAND_MANUFACTURER_ID_FM,
+		dev_id: 					_SPI_NAND_DEVICE_ID_FM25S01A,
+		ptr_name:					(const u8 *) " _SPI_NAND_DEVICE_ID_FM25S01A",
+		device_size:				_SPI_NAND_CHIP_SIZE_1GBIT,
+		page_size:					_SPI_NAND_PAGE_SIZE_2KBYTE,
+		oob_size:					_SPI_NAND_OOB_SIZE_64BYTE,
+		erase_size: 				_SPI_NAND_BLOCK_SIZE_128KBYTE,
+		dummy_mode: 				SPI_NAND_FLASH_READ_DUMMY_BYTE_APPEND,
+		read_mode:					SPI_NAND_FLASH_READ_SPEED_MODE_DUAL,
+		write_mode:					SPI_NAND_FLASH_WRITE_SPEED_MODE_SINGLE,
+		oob_free_layout :			&ooblayout_type3, 	
+		feature:					SPI_NAND_FLASH_ERASE_STATISTICS,
+		die_num:					1,
+		ecc_fail_check_info:		{0x30, 0x20},
+		write_en_type:				SPI_NAND_FLASH_WRITE_EN_FIRST,
+		unlock_block_info:			{0x78, 0x0},
+		quad_en:					{0x00, 0x00},
+		ecc_en:						{_SPI_NAND_ADDR_FEATURE, 0x10, 0x10},
+#ifdef TCSUPPORT_NAND_FLASH_OTP
+		otp_page_num:				-1,
+#endif
+		extend_dev_id:				_SPI_NAND_DUMMY_EXTEND_DEVICE_ID,
+	},
+
 	{
 		mfr_id: 					_SPI_NAND_MANUFACTURER_ID_FM,
 		dev_id: 					_SPI_NAND_DEVICE_ID_FM25G01B,
