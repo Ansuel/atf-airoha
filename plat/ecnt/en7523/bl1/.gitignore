@@ -1,0 +1,5 @@
+# Build products of the standalone flat-binary BL1 build (see Makefile)
+*.o
+*.elf
+*.bin
+*.map
