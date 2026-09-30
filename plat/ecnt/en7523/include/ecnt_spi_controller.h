@@ -78,7 +78,7 @@
 #define	_SPI_CONTROLLER_VAL_OP_ODNID				(0x1A)
 
 #if defined(TCSUPPORT_PARALLEL_NAND)
-#include <spi/spi_nfi.h>
+#include <ecnt_spi_nfi.h>
 #define isParallelNAND				((nfi_type() == SPI_NFI_PARALLEL))
 #else
 #define isParallelNAND				0

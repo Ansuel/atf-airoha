@@ -24,14 +24,9 @@ FLASH_SRCS	+= $(addprefix plat/ecnt/common/drivers/flash/,	\
 				spi_nfi.c)
 
 ifneq ($(TCSUPPORT_PARALLEL_NAND),)
-ifeq ($(TCSUPPORT_ATF_RELEASE),)
-FLASH_SRCS	+=	$(KERNEL_EXT_SPI_NAND_DIR)/parallel_nand_flash.c	\
-				$(KERNEL_EXT_SPI_NAND_DIR)/parallel_nand_flash_table.c
-else
-FLASH_SRCS	+=	$(addprefix drivers/mtd/chips/,	\
+FLASH_SRCS	+=	$(addprefix plat/ecnt/common/drivers/flash/,	\
 				parallel_nand_flash.c			\
 				parallel_nand_flash_table.c)
-endif
 endif
 
 ifeq ($(TCSUPPORT_ATF_RELEASE),)
