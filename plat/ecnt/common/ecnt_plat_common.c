@@ -244,6 +244,7 @@ uint64_t ecnt_efuse_handler(uint32_t r1, uint32_t r2, uint32_t r3)
 
 	switch (r1)
 	{
+#ifndef EFUSE_DISABLE
 		case 0x44494B50: /* PKID */
 			status = efuse_write_pkgid((uint8_t) r2, (uint8_t) r3);
 			break;
@@ -352,6 +353,7 @@ uint64_t ecnt_efuse_handler(uint32_t r1, uint32_t r2, uint32_t r3)
 			break;
 #endif
 
+#endif /* EFUSE_DISABLE */
 
 
 		default:
@@ -368,11 +370,15 @@ uint64_t ecnt_avs_handler(uint32_t r1, uint32_t r2, uint32_t r3)
 	uint64_t iddq64;
 	uint64_t ret;
 
+#ifdef EFUSE_DISABLE
+	iddq64 = 0;
+#else
 	iddq64 =  (0xff & (uint64_t) read_iddq());
     #if !defined(CPU_FREQ_OP)	
 	if(iddq64 <= r2)
 		return iddq64;
     #endif
+#endif
 	switch (r1)
 	{
 		case AVS_OP_FREQ_DOWN:

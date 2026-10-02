@@ -9,6 +9,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <drivers/io/io_storage.h>
 
 typedef struct hw_trap {
 	uint32_t skip_fw_upgrade		:1;
@@ -77,6 +78,9 @@ int get_freq_sel(void);
 void fill_secure_data(uint8_t *p_data, uint8_t offset, size_t len);
 int efuse_init(void);
 void plat_ecnt_io_setup(const hw_trap_t *hw_trap);
+#ifdef TCSUPPORT_GPT_ATF_SUPPORT
+int fill_io_block_spec_gpt(io_block_spec_t *spec, const char *name);
+#endif
 int plat_check_bypass(void);
 #ifdef TCSUPPORT_ARM_SECURE_BOOT_FLASH_KEY
 int plat_check_secure_boot_flash_key(void);

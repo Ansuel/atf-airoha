@@ -382,12 +382,20 @@ ifneq ($(strip $(MT7510_EN7512_FPGA_STAGE)),)
 $(eval $(call add_define,MT7510_EN7512_FPGA_STAGE))
 endif
 
+ifneq ($(strip $(TCSUPPORT_CPU_EN7523)),)
+$(eval $(call add_define,TCSUPPORT_CPU_EN7523))
+$(eval $(call add_define,TCSUPPORT_CPU_EN7512))
+$(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
+endif
+
 ifneq ($(strip $(TCSUPPORT_CPU_EN7581)),)
 $(eval $(call add_define,TCSUPPORT_CPU_EN7581))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7523))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7512))
 $(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
 $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
 endif
 
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)),)
@@ -396,10 +404,32 @@ $(eval $(call add_define,TCSUPPORT_CPU_EN7523))
 $(eval $(call add_define,TCSUPPORT_CPU_EN7512))
 $(eval $(call add_define,TCSUPPORT_CPU_ARMV8))
 $(eval $(call add_define,TCSUPPORT_UBOOT_64BIT))
+$(eval $(call add_define,TCSUPPORT_LITTLE_ENDIAN))
 endif
 
+ifneq ($(strip $(TCSUPPORT_GPT_ATF_SUPPORT)),)
+$(eval $(call add_define,TCSUPPORT_GPT_ATF_SUPPORT))
+$(eval $(call add_define,TCSUPPORT_EMMC))
+else
 ifneq ($(strip $(TCSUPPORT_EMMC)),)
 $(eval $(call add_define,TCSUPPORT_EMMC))
+endif
+endif
+
+ifneq ($(strip $(OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET)),)
+$(eval $(call add_define_val,OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET,$(OVERRIDE_PLAT_ECNT_BL31_FIP_OFFSET)))
+endif
+
+ifneq ($(strip $(TCSUPPORT_UBI_SUPPORT)),)
+$(eval $(call add_define,TCSUPPORT_UBI_SUPPORT))
+endif
+
+ifneq ($(strip $(OVERRIDE_UBI_START_ADDR)),)
+$(eval $(call add_define_val,OVERRIDE_UBI_START_ADDR,$(OVERRIDE_UBI_START_ADDR)))
+endif
+
+ifneq ($(strip $(TCSUPPORT_SPI_NAND_FLASH_ECC_DMA)),)
+$(eval $(call add_define,TCSUPPORT_SPI_NAND_FLASH_ECC_DMA))
 endif
 
 ifneq ($(strip $(TCSUPPORT_TPL_SUPPORT)),)

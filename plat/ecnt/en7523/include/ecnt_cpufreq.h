@@ -13,7 +13,9 @@ enum e_cpu_freq {
     cpu_freq_850M,
     cpu_freq_900M,
     cpu_freq_950M,
-	cpu_freq_1000M,
+#if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583) || defined(TCSUPPORT_CPU_AN7552)
+    cpu_freq_1000M,
+#endif
 #if defined(TCSUPPORT_CPU_EN7581) || defined(TCSUPPORT_CPU_AN7583)
     cpu_freq_1050M,
     cpu_freq_1100M,

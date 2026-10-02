@@ -9,12 +9,14 @@ FLASH_SRCS	:=	$(addprefix plat/ecnt/common/drivers/flash/,	\
 				spi_nor_flash.c										)
 
 BL2_CFLAGS	+= -march=armv8-a+crc
+ifneq ($(TCSUPPORT_UBI_SUPPORT),)
 FLASH_SRCS	+= $(addprefix drivers/io/ubi/,		\
 				io_ubi.c						\
 				ubispl.c						\
 				crc32.c)
 FLASH_SRCS	+= $(addprefix plat/ecnt/en7523/,	\
 				bl2_boot_nand_ubi.c)
+endif
 
 FLASH_SRCS	+= $(addprefix plat/ecnt/common/drivers/flash/,	\
 				spi_nand_flash.c				\

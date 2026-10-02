@@ -186,6 +186,9 @@ static int ubi_volume_size(io_entity_t *entity, size_t *length)
 			goto retry;
 		}
 
+		if (ret == -ENOENT)
+			ud->dev_spec->init_done = 1;
+
 		return ret;
 	}
 
@@ -256,6 +259,9 @@ static int ubi_volume_read(io_entity_t *entity, uintptr_t buffer, size_t length,
 			ud->dev_spec->fastmap = 0;
 			goto retry;
 		}
+
+		if (ret == -ENOENT)
+			ud->dev_spec->init_done = 1;
 
 		return ret;
 	}

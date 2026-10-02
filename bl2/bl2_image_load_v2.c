@@ -18,16 +18,18 @@
 
 #include <platform_def.h>
 
-/*******************************************************************************
- * This function loads SCP_BL2/BL3x images and returns the ep_info for
- * the next executable image.
- ******************************************************************************/
-struct entry_point_info *bl2_load_images(void)
+#if defined(IMAGE_BL23)
+extern void bl2_mem_params_backup(void);
+extern void bl2_mem_params_restore(void);
+extern void plat_ecnt_io_switch_to_memmap(void);
+extern int fip_image_xmodem_load(void *loadaddr, int max_size);
+#endif
+
+static int bl2_do_load_images(void)
 {
-	bl_params_t *bl2_to_next_bl_params;
 	bl_load_info_t *bl2_load_info;
 	const bl_load_info_node_t *bl2_node_info;
-	int plat_setup_done = 0;
+	static int plat_setup_done = 0;
 	int err;
 
 	/*
@@ -60,7 +62,7 @@ struct entry_point_info *bl2_load_images(void)
 		err = bl2_plat_handle_pre_image_load(bl2_node_info->image_id);
 		if (err != 0) {
 			ERROR("BL2: Failure in pre image load handling (%i)\n", err);
-			plat_error_handler(err);
+			return err;
 		}
 
 		if ((bl2_node_info->image_info->h.attr &
@@ -71,7 +73,7 @@ struct entry_point_info *bl2_load_images(void)
 			if (err != 0) {
 				ERROR("BL2: Failed to load image id %u (%i)\n",
 				      bl2_node_info->image_id, err);
-				plat_error_handler(err);
+				return err;
 			}
 		} else {
 			INFO("BL2: Skip loading image id %u\n", bl2_node_info->image_id);
@@ -81,12 +83,60 @@ struct entry_point_info *bl2_load_images(void)
 		err = bl2_plat_handle_post_image_load(bl2_node_info->image_id);
 		if (err != 0) {
 			ERROR("BL2: Failure in post image load handling (%i)\n", err);
-			plat_error_handler(err);
+			return err;
 		}
 
 		/* Go to next image */
 		bl2_node_info = bl2_node_info->next_load_info;
 	}
+
+	return 0;
+}
+
+/*******************************************************************************
+ * This function loads SCP_BL2/BL3x images and returns the ep_info for
+ * the next executable image.
+ ******************************************************************************/
+struct entry_point_info *bl2_load_images()
+{
+	bl_params_t *bl2_to_next_bl_params;
+	int err;
+
+#if !defined(IMAGE_BL23)
+	err = bl2_do_load_images();
+	if (err != 0)
+		plat_error_handler(err);
+#else
+	while (1)  {
+		bl2_mem_params_backup();
+		err = bl2_do_load_images();
+		if (!err)
+			break;
+
+		/*
+		 * bl2_plat_handle_pre_image_load() and load_auth_image()
+		 * may change contents of bl2_node_info->image_info, thus
+		 * next call of bl2_do_load_images() will finish by panic.
+		 *
+		 * Restore original values of bl2_node_info->image_info to
+		 * avoid an issue.
+		 */
+		bl2_mem_params_restore();
+
+		/*
+		 * In the case of booting from UBI, ubi I/O driver will be
+		 * used to read BL31/U-Boot FIP image. This is not suitable.
+		 *
+		 * Switch to memmap based driver suitable for image reading
+		 * via xmodem.
+		 */
+		plat_ecnt_io_switch_to_memmap();
+
+		printf("BL31 + U-Boot FIP is damaged, loading via xmodem\n");
+		fip_image_xmodem_load((void*)(uintptr_t)PLAT_ECNT_FIP_BASE,
+				      PLAT_ECNT_FIP_MAX_SIZE);
+	}
+#endif
 
 	/*
 	 * Get information to pass to the next image.

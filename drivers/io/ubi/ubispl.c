@@ -1201,12 +1201,16 @@ void ubispl_init_scan(struct io_ubi_dev_spec *info, int fastmap)
 static int ubispl_vol_id_from_name(struct ubi_scan_info *ubi,
 				   const char *name)
 {
-	uint16_t len;
+	uint16_t len, nlen;
 	uint32_t i;
 
 	for (i = 0; i < UBI_SPL_VOL_IDS; i++) {
 		len = be16toh(ubi->vtbl[i].name_len);
 		if (!len)
+			continue;
+
+		nlen = strlen(name);
+		if (nlen != len)
 			continue;
 
 		if (strncmp(name, ubi->vtbl[i].name, len) == 0)
@@ -1225,11 +1229,11 @@ int ubispl_get_volume_data_size(struct io_ubi_dev_spec *info, int vol_id,
 
 	if (vol_id < 0) {
 		if (!vol_name)
-			return -EINVAL;
+			return -ENOENT;
 
 		vol_id = ubispl_vol_id_from_name(ubi, vol_name);
 		if (vol_id < 0)
-			return vol_id;
+			return -ENOENT;
 	}
 
 	if (ubi->sizes[vol_id].valid)
@@ -1261,11 +1265,11 @@ int ubispl_load_volume(struct io_ubi_dev_spec *info, int vol_id,
 
 	if (vol_id < 0) {
 		if (!vol_name)
-			return -EINVAL;
+			return -ENOENT;
 
 		vol_id = ubispl_vol_id_from_name(ubi, vol_name);
 		if (vol_id < 0)
-			return vol_id;
+			return -ENOENT;
 
 		ubi_dbg("Loading volume with name %s (Id #%d)", vol_name,
 			vol_id);
