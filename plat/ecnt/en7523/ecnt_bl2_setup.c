@@ -343,6 +343,15 @@ void bl2_plat_preload_setup_optimize(void)
 }
 #endif
 
+#if defined(IMAGE_BL23)
+int fip_image_xmodem_load(void *loadaddr, int max_size)
+{
+	printf("Press x to load BL31 + U-Boot FIP\n");
+	while (console.getc(&console) != 'x');
+	return XModemReceive(&console, max_size, loadaddr);
+}
+#endif
+
 void bl2_plat_preload_setup(void)
 {
 #if !defined(IMAGE_BL21) && !defined(IMAGE_BL22)
