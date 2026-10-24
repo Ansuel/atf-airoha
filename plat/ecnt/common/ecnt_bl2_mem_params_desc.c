@@ -79,4 +79,18 @@ static bl_mem_params_node_t bl2_mem_params_descs[] = {
 #endif
 };
 
+#if defined(IMAGE_BL23)
+static bl_mem_params_node_t bl2_mem_params_descs_backup[sizeof(bl2_mem_params_descs) / sizeof(bl2_mem_params_descs[0])];
+
+void bl2_mem_params_backup(void)
+{
+	memcpy(bl2_mem_params_descs_backup, bl2_mem_params_descs, sizeof(bl2_mem_params_descs));
+}
+
+void bl2_mem_params_restore(void)
+{
+	memcpy(bl2_mem_params_descs, bl2_mem_params_descs_backup, sizeof(bl2_mem_params_descs));
+}
+#endif
+
 REGISTER_BL_IMAGE_DESCS(bl2_mem_params_descs)

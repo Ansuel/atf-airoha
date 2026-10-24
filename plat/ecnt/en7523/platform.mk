@@ -84,9 +84,12 @@ PLAT_INCLUDES			:=	-I${ECNT_PLAT}/common/					\
 				-I${ECNT_PLAT}/common/drivers/flash/				\
 				-I${ECNT_PLAT}/common/drivers/xmodem/				\
 				-I${ECNT_PLAT_SOC}/include/							\
-				-Iinclude/plat/arm/common/							\
-				-Iinclude/drivers/io/								\
+				-Iinclude/plat/arm/common/
+
+ifdef TCSUPPORT_UBI_SUPPORT
+PLAT_INCLUDES +=		-Iinclude/drivers/io/ \
 				-Idrivers/io/ubi/
+endif
 
 ifeq ($(CPU_BUS_BL2_TEST),1)
 PLAT_INCLUDES += -DCPU_BUS_BL2_TEST
