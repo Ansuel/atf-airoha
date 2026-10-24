@@ -84,9 +84,12 @@ PLAT_INCLUDES			:=	-I${ECNT_PLAT}/common/					\
 				-I${ECNT_PLAT}/common/drivers/flash/				\
 				-I${ECNT_PLAT}/common/drivers/xmodem/				\
 				-I${ECNT_PLAT_SOC}/include/							\
-				-Iinclude/plat/arm/common/							\
-				-Iinclude/drivers/io/								\
+				-Iinclude/plat/arm/common/
+
+ifdef TCSUPPORT_UBI_SUPPORT
+PLAT_INCLUDES +=		-Iinclude/drivers/io/ \
 				-Idrivers/io/ubi/
+endif
 
 ifeq ($(CPU_BUS_BL2_TEST),1)
 PLAT_INCLUDES += -DCPU_BUS_BL2_TEST
@@ -360,12 +363,22 @@ ifeq ($(TCSUPPORT_ATF_RELEASE),)
 endif
 endif
 else
+ifneq ($(TCSUPPORT_ATF_RELEASE),)
 	BL2_SOURCES			+= ${ECNT_PLAT}/common/drivers/ddr_cal/en7523/hal_io.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_basic_api.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_calibration_api.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_main.c			\
 				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc.c				\
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+else
+	BL2_UNOPEN_SOURCES +=	${ECNT_PLAT}/common/drivers/ddr_cal/en7523/hal_io.c				\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_basic_api.c			\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_calibration_api.c		\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc_pi_main.c			\
+				${ECNT_PLAT}/common/drivers/ddr_cal/en7523/dramc.c				\
+				${ECNT_PLAT}/common/drivers/efuse/$(EFUSE_DRIVER)				\
+				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+endif
 endif
 endif
 endif
@@ -396,6 +409,14 @@ ifeq ($(IMAGE_BL23),1)
 				${ECNT_PLAT}/common/ecnt_bl2_mem_params_desc.c		\
 				${ECNT_PLAT}/common/drivers/xmodem/xmodem.c			\
 				${LZMA_SOURCES}
+
+ifeq ($(TCSUPPORT_GPT_ATF_SUPPORT),1)
+	BL2_SOURCES +=		drivers/io/io_block.c							\
+				drivers/partition/partition.c						\
+				drivers/partition/gpt.c							\
+				common/tf_crc32.c
+endif
+
 ifneq ($(strip $(TCSUPPORT_CPU_AN7583)$(TCSUPPORT_CPU_EN7581)$(TCSUPPORT_CPU_AN7552)),)
 ifneq ($(TCSUPPORT_BB_FIX_UNOPEN),0)
 ifeq ($(TCSUPPORT_ATF_RELEASE),)
@@ -427,9 +448,16 @@ endif
 endif
 
 else
+ifneq ($(TCSUPPORT_ATF_RELEASE),)
 	BL2_SOURCES			+= 	${ECNT_PLAT_SOC}/ecnt_avs.c							\
 				${ECNT_PLAT_SOC}/ecnt_scu_phy.c						\
 				${ECNT_PLAT}/common/drivers/efuse_load/en7523/efuse_load.c
+else
+	BL2_SOURCES		+=	${ECNT_PLAT_SOC}/ecnt_avs.c						\
+					${ECNT_PLAT_SOC}/ecnt_scu_phy.c
+	BL2_UNOPEN_SOURCES	+=	${ECNT_PLAT}/common/drivers/efuse/$(EFUSE_DRIVER)			\
+					${ECNT_PLAT}/common/drivers/efuse_load/${SOC_SUB_DIR}/efuse_load.c
+endif
 endif
 endif
 
@@ -671,7 +699,10 @@ endif
 endif
 else
 				
-	BL31_SOURCES		+=	${ECNT_PLAT}/common/drivers/efuse/efuse.c		\
+ifeq ($(EFUSE_DISABLE),)
+	BL31_SOURCES		+=	${ECNT_PLAT}/common/drivers/efuse/efuse.c
+endif
+	BL31_SOURCES		+= \
 				${ECNT_PLAT_SOC}/ecnt_avs.c							\
 				${ECNT_PLAT_SOC}/ecnt_scu_phy.c
 endif
