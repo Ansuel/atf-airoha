@@ -26,7 +26,7 @@
 #define CR_CPUPLL_SDM_PCW   (IO_PHYS + 0xFA202AC)
 #define CR_CPUPLL_SDM_PCW_CHG	(IO_PHYS + 0xFA202B0)
 #define CR_CPUPLL_SDM_SSC_PRD	(IO_PHYS + 0xFA202B8)
-#define PCW_MASK            (0xff)
+#define PCW_MASK            (0xffU)
 #define PCW_SHIFT           (24)
 #define POSDIV_MASK         (0x7)
 #define POSDIV_SHIFT        (18)
@@ -36,7 +36,7 @@
 #define CR_CPUPLL_SDM_PCW   (IO_PHYS + 0xFA202B4)
 #define CR_CPUPLL_SDM_PCW_CHG   (IO_PHYS + 0xFA202B8)
 #define CR_CPUPLL_SDM_SSC_PRD (0) // AN7552 only
-#define PCW_MASK            (0xff)
+#define PCW_MASK            (0xffU)
 #define PCW_SHIFT           (24)
 #define POSDIV_MASK         (0x7)
 #define POSDIV_SHIFT        (4)
@@ -46,7 +46,7 @@
 #define CR_CPUPLL_SDM_PCW   (IO_PHYS + 0xFA202AC)
 #define CR_CPUPLL_SDM_PCW_CHG   (IO_PHYS + 0xFA202B0)
 #define CR_CPUPLL_SDM_SSC_PRD   (IO_PHYS + 0xFA202B8)
-#define PCW_MASK            (0xff)
+#define PCW_MASK            (0xffU)
 #define PCW_SHIFT           (24)
 #define POSDIV_MASK         (0x7)
 #define POSDIV_SHIFT        (18)
@@ -509,6 +509,13 @@ int an7552_bootup_clk_src_switch(enum e_cpu_freq cpuFreq)
 int en7523_armpll_set(enum e_cpu_freq cpuFreq)
 {
     unsigned int val;
+
+    /* Kernel OPPs can be newer than the frequency table in this BL31. */
+    if (cpuFreq >= cpu_freq_last) {
+        printf("ERROR: cpu freq index %d out of range, highest is %d\n",
+               cpuFreq, cpu_freq_last - 1);
+        return -1;
+    }
 #if 0	//YMC mark for new AVS FW
     AVS_STATUS_T ret;
 
